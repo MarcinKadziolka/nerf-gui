@@ -24,15 +24,26 @@ pygame.display.set_caption("Quick Maths")
 def lego():
     run = True
     checkboxes_x = settings.SCREEN_SIZE.right_third
-    checkboxes_y = 200
+    checkboxes_y = 600
+    n_samples = CheckBoxLayout(
+        ["8", "16", "32", "64", "128"],
+        active=0,
+        width=60,
+        distance=settings.DISTANCE,
+        x=checkboxes_x,
+        y=checkboxes_y,
+        orientation=Orientation.HORIZONTAL,
+    )
     while run:
         screen.fill(settings.Color.BACKGROUND.value)
         for event in pygame.event.get():
+            n_samples.update(event)
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     run = False
             if event.type == pygame.QUIT:
                 run = False
+        n_samples.display(screen)
         pygame.display.update()
 
 
