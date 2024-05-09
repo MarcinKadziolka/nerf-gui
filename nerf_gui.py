@@ -1,19 +1,10 @@
 import pygame
 import settings
-import functions
 from classes import (
-    Button,
-    TextField,
     CheckBoxLayout,
-    Navigation,
-    ButtonLayout,
     Orientation,
 )
-import random
-import time
-from collections import defaultdict
 import os
-from copy import copy
 
 os.environ["SDL_VIDEO_CENTERED"] = "1"
 pygame.init()
