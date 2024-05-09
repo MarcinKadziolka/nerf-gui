@@ -3,25 +3,31 @@ import functions
 import settings
 from enum import Enum
 from collections import defaultdict
+from typing import Union
+
+
+class Orientation(Enum):
+    HORIZONTAL = 0
+    VERTICAL = 1
 
 
 class Button:
     def __init__(
         self,
-        text,
+        text: str = "Button",
         y: int = settings.SCREEN_SIZE.mid_y,
         x: int = settings.SCREEN_SIZE.mid_x,
-        width=400,
-        height=50,
-        font=settings.main_font_small,
-        text_color=settings.Color.BLACK.value,
-        color=settings.Color.WHITE.value,
-        shadow_color=settings.Color.BLACK.value,
-        inactive_color=settings.Color.GRAY.value,
-        current_color=settings.Color.GREEN.value,
-        active_and_current_color=settings.Color.LIGHT_GREEN.value,
-        active=False,
-        on_hover=True,
+        width: int = 400,
+        height: int = 50,
+        font: pygame.font.FontType = settings.main_font_small,
+        text_color: tuple = settings.Color.BLACK.value,
+        color: Union[tuple, list] = settings.Color.WHITE.value,
+        shadow_color: Union[tuple, list] = settings.Color.BLACK.value,
+        inactive_color: Union[tuple, list] = settings.Color.GRAY.value,
+        current_color: Union[tuple, list] = settings.Color.GREEN.value,
+        active_and_current_color: Union[tuple, list] = settings.Color.LIGHT_GREEN.value,
+        active: bool = False,
+        on_hover: bool = True,
     ):
         self.x = x
         self.y = y
@@ -77,7 +83,7 @@ class Button:
             return True
         return False
 
-    def check_pressed(self, event):
+    def check_pressed(self, event: pygame.event.EventType):
         if not self.current:
             return
         if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
@@ -89,7 +95,7 @@ class Button:
                 return True
         return False
 
-    def check_action(self, event):
+    def check_action(self, event: pygame.event.EventType):
         return self.check_pressed(event) or self.check_clicked()
 
     def check_down(self):
@@ -112,7 +118,7 @@ class Button:
             )
             self.button.center = (self.x, self.y - self.hover_pop)
 
-    def draw(self, screen):
+    def draw(self, screen: pygame.Surface):
         pygame.draw.rect(
             screen,
             self.shadow_color,
@@ -136,39 +142,33 @@ class Button:
         )
 
 
-class Orientation(Enum):
-    HORIZONTAL = 0
-    VERTICAL = 1
-
-
 class ButtonLayout:
-    def __init__(self, buttons) -> None:
+    def __init__(self, buttons: list[Button]) -> None:
         if not isinstance(buttons, list):
             raise Exception("Argument provided must a list")
         self.buttons = buttons
 
-    def display(self, screen):
+    def display(self, screen: pygame.Surface):
         for button in self.buttons:
             button.draw(screen)
 
-    def update(self, event):
+    def update(self, event: pygame.event.EventType):
         for button in self.buttons:
-            if button.check_clicked():
-                button.run()
+            button.check_action(event)
 
     def __len__(self):
         return len(self.buttons)
 
 
 class Navigation:
-    def __init__(self, layouts, navigation: defaultdict = defaultdict(tuple, {})):
+    def __init__(self, layouts: list, navigation: defaultdict = defaultdict(tuple, {})):
         self.layout_id = 0
         self.button_id = 0
         self.layouts = layouts
         self.layouts[self.layout_id].buttons[self.button_id].current = True
         self.navigation = navigation
 
-    def get_next_id(self, event):
+    def get_next_id(self, event: pygame.event.EventType):
         curr_layout = self.layouts[self.layout_id]
         n_buttons = len(curr_layout)
         if event.type != pygame.KEYDOWN:
@@ -183,7 +183,7 @@ class Navigation:
             if self.button_id - 1 >= 0:
                 self.button_id -= 1
 
-    def update(self, event):
+    def update(self, event: pygame.event.EventType):
         self.layouts[self.layout_id].buttons[self.button_id].current = False
         self.get_next_id(event)
         self.layouts[self.layout_id].buttons[self.button_id].current = True
@@ -192,17 +192,17 @@ class Navigation:
 class CheckBoxLayout:
     def __init__(
         self,
-        texts,
-        active,
+        texts: list[str],
+        active: set[int],
         distance: int,
         x: int = settings.SCREEN_SIZE.mid_x,
         y: int = settings.SCREEN_SIZE.mid_y,
-        height=50,
-        width=400,
-        center=True,
-        orientation=Orientation.VERTICAL,
-        inactive_color=settings.Color.GRAY.value,
-        multiple_choice=False,
+        height: int = 50,
+        width: int = 400,
+        center: bool = True,
+        orientation: Orientation = Orientation.VERTICAL,
+        inactive_color: Union[tuple, list] = settings.Color.GRAY.value,
+        multiple_choice: bool = False,
     ) -> None:
         self.num_buttons = len(texts)
         self.buttons = []
@@ -237,11 +237,11 @@ class CheckBoxLayout:
             elif orientation == Orientation.VERTICAL:
                 self.start_y += distance
 
-    def display(self, screen):
+    def display(self, screen: pygame.Surface):
         for button in self.buttons:
             button.draw(screen)
 
-    def update(self, event):
+    def update(self, event: pygame.event.EventType):
         for i, button in enumerate(self.buttons):
             if button.check_action(event):
                 if self.multiple_choice:
@@ -267,16 +267,16 @@ class CheckBoxLayout:
 class TextField:
     def __init__(
         self,
-        font,
-        text_color,
-        active_color,
-        inactive_color,
-        prompt_text,
-        x=settings.SCREEN_SIZE.mid_x,
-        y=settings.SCREEN_SIZE.mid_y,
-        width=500,
-        height=50,
-        numeric_only=False,
+        font: pygame.font.FontType,
+        text_color: tuple[int, int, int],
+        active_color: tuple[int, int, int],
+        inactive_color: tuple[int, int, int],
+        prompt_text: str,
+        x: int = settings.SCREEN_SIZE.mid_x,
+        y: int = settings.SCREEN_SIZE.mid_y,
+        width: int = 500,
+        height: int = 50,
+        numeric_only: bool = False,
     ):
         self.active = True
         self.user_input = prompt_text
@@ -294,7 +294,7 @@ class TextField:
         self.dont_register = [pygame.K_RETURN, pygame.K_BACKSPACE, pygame.K_ESCAPE]
         self.numeric_only = numeric_only
 
-    def get_event(self, event):
+    def get_event(self, event: pygame.event.EventType):
         if not self.active or event.type != pygame.KEYDOWN:
             return
         if event.key == pygame.K_BACKSPACE:
@@ -309,7 +309,7 @@ class TextField:
         else:
             self.user_input += event.unicode
 
-    def update(self, screen):
+    def update(self, screen: pygame.Surface):
         color = self.active_color if self.active else self.inactive_color
         pygame.draw.rect(screen, color, self.input_field, border_radius=50)
 
