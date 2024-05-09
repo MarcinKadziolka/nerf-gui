@@ -27,7 +27,7 @@ def lego():
     checkboxes_y = 600
     n_samples = CheckBoxLayout(
         ["8", "16", "32", "64", "128"],
-        active=0,
+        active={0},
         width=60,
         distance=settings.DISTANCE,
         x=checkboxes_x,
