@@ -202,10 +202,12 @@ class CheckBoxLayout:
         center=True,
         orientation=Orientation.VERTICAL,
         inactive_color=settings.Color.GRAY.value,
+        multiple_choice=False,
     ) -> None:
         self.num_buttons = len(texts)
         self.buttons = []
-        self.active_id = active
+        self.active_ids = active
+        self.multiple_choice = multiple_choice
         self.start_x = x
         self.start_y = y
 
@@ -226,7 +228,7 @@ class CheckBoxLayout:
                     y=self.start_y,
                     x=self.start_x,
                     height=height,
-                    active=(i == active),
+                    active=(i in self.active_ids),
                     inactive_color=inactive_color,
                 )
             )
@@ -242,9 +244,38 @@ class CheckBoxLayout:
     def update(self, event):
         for i, button in enumerate(self.buttons):
             if button.check_action(event):
-                self.active_id = i
-                for other_button in self.buttons:
-                    other_button.active = button == other_button
+                if self.multiple_choice:
+                    button.active = not button.active
+                    if button.active:
+                        self.active_ids.add(i)
+                    else:
+                        self.active_ids.discard(i)
+                else:
+                    self.active_ids.clear()
+                    button.active = True
+                    self.active_ids.add(i)
+                    for other_button in self.buttons:
+                        if other_button != button:
+                            other_button.active = False
+                print(self.active_ids)
+                break
+
+    def update1(self, event):
+        for i, button in enumerate(self.buttons):
+            if button.check_action(event):
+                if self.multiple_choice:
+                    button.active = not button.active
+                    if button.active:
+                        self.active_ids.append(i)
+                    else:
+                        if i in self.active_ids:
+                            self.active_ids.remove(i)
+                else:
+                    for j, other_button in enumerate(self.buttons):
+                        other_button.active = button == other_button
+                        if not other_button.active:
+                            if j in self.active_ids:
+                                self.active_ids.remove(j)
                 break
 
     def __len__(self):
