@@ -3,7 +3,6 @@ import functions
 import settings
 from enum import Enum
 from collections import defaultdict
-from typing import Union
 
 
 class Orientation(Enum):
@@ -21,11 +20,13 @@ class Button:
         height: int = 50,
         font: pygame.font.FontType = settings.main_font_small,
         text_color: tuple = settings.Color.BLACK.value,
-        color: Union[tuple, list] = settings.Color.WHITE.value,
-        shadow_color: Union[tuple, list] = settings.Color.BLACK.value,
-        inactive_color: Union[tuple, list] = settings.Color.GRAY.value,
-        current_color: Union[tuple, list] = settings.Color.GREEN.value,
-        active_and_current_color: Union[tuple, list] = settings.Color.LIGHT_GREEN.value,
+        color: tuple[int, int, int] = settings.Color.WHITE.value,
+        shadow_color: tuple[int, int, int] = settings.Color.BLACK.value,
+        inactive_color: tuple[int, int, int] = settings.Color.GRAY.value,
+        current_color: tuple[int, int, int] = settings.Color.GREEN.value,
+        active_and_current_color: tuple[
+            int, int, int
+        ] = settings.Color.LIGHT_GREEN.value,
         active: bool = False,
         on_hover: bool = True,
     ):
@@ -201,7 +202,7 @@ class CheckBoxLayout:
         width: int = 400,
         center: bool = True,
         orientation: Orientation = Orientation.VERTICAL,
-        inactive_color: Union[tuple, list] = settings.Color.GRAY.value,
+        inactive_color: tuple[int, int, int] = settings.Color.GRAY.value,
         multiple_choice: bool = False,
     ) -> None:
         self.num_buttons = len(texts)
