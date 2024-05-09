@@ -260,24 +260,6 @@ class CheckBoxLayout:
                 print(self.active_ids)
                 break
 
-    def update1(self, event):
-        for i, button in enumerate(self.buttons):
-            if button.check_action(event):
-                if self.multiple_choice:
-                    button.active = not button.active
-                    if button.active:
-                        self.active_ids.append(i)
-                    else:
-                        if i in self.active_ids:
-                            self.active_ids.remove(i)
-                else:
-                    for j, other_button in enumerate(self.buttons):
-                        other_button.active = button == other_button
-                        if not other_button.active:
-                            if j in self.active_ids:
-                                self.active_ids.remove(j)
-                break
-
     def __len__(self):
         return len(self.buttons)
 
