@@ -334,7 +334,6 @@ class CheckBoxLayout:
                     for other_button in self.buttons:
                         if other_button != button:
                             other_button.active = False
-                print(self.active_ids)
                 break
 
     def __len__(self):
