@@ -16,15 +16,13 @@ class Image:
         image_path: str,
         x: int = 0,
         y: int = 0,
-        scale_factor: float = 1,
+        scale: float = 1,
         border_size: int = 2,
     ) -> None:
         self.x = x
         self.y = y
         self.border_size = border_size
-        self.image = pygame.transform.scale_by(
-            pygame.image.load(image_path), scale_factor
-        )
+        self.image = pygame.transform.scale_by(pygame.image.load(image_path), scale)
         self.rect = self.image.get_rect(center=(self.x, self.y))
         self.width = self.image.get_width()
         self.height = self.image.get_height()
