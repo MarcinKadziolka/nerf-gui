@@ -70,11 +70,21 @@ def lego():
         x=image.x,
         y=int(image.y + image.height / 2 + settings.DISTANCE),
     )
+
     while run:
         screen.fill(settings.Color.BACKGROUND.value)
         for event in pygame.event.get():
+
             n_samples.update(event)
-            ablation.update(event)
+            if n_samples.checkboxes[-1].active:
+                ablation.update(event)
+                for button in ablation.checkboxes:
+                    button.hover_size = 2
+                    button.hover_pop = 2
+            else:
+                for button in ablation.checkboxes:
+                    button.hover_size = 0
+                    button.hover_pop = 0
 
             if (activated_arrow := arrows.update(event)) is not None:
                 if activated_arrow.text == "<":
@@ -92,6 +102,9 @@ def lego():
         arrows.display(screen)
         n_samples.display(screen)
         ablation.display(screen)
+        if not n_samples.checkboxes[-1].active:
+            for lock in locks:
+                lock.draw(screen)
         pygame.display.update()
 
 
