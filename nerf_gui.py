@@ -18,12 +18,12 @@ def lego():
     run = True
     checkboxes_x = settings.SCREEN_SIZE.right_third
     checkboxes_y = 600
-    small_button_width = 60
+    small_button_width = 70
     n_samples = CheckBoxLayout(
-        ["8", "16", "32", "64", "128"],
-        active={0},
+        ["16", "32", "64", "128"],
+        active={3},
         width=small_button_width,
-        distance=settings.DISTANCE,
+        distance=settings.DISTANCE + 10,
         x=checkboxes_x,
         y=checkboxes_y,
         orientation=Orientation.HORIZONTAL,
