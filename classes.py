@@ -350,6 +350,13 @@ class CheckBoxLayout:
                             other_button.active = False
                 break
 
+    def lock(self):
+        for checkbox in self.checkboxes:
+            checkbox.lock()
+
+    def unlock(self):
+        for checkbox in self.checkboxes:
+            checkbox.unlock()
     def __len__(self):
         return len(self.checkboxes)
 
