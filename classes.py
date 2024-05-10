@@ -119,7 +119,7 @@ class Button:
             )
             self.button.center = (self.x, self.y - self.hover_pop)
 
-    def draw(self, screen: pygame.Surface):
+    def draw(self, screen: pygame.SurfaceType):
         pygame.draw.rect(
             screen,
             self.shadow_color,
@@ -149,7 +149,7 @@ class ButtonLayout:
             raise Exception("Argument provided must a list")
         self.buttons = buttons
 
-    def display(self, screen: pygame.Surface):
+    def display(self, screen: pygame.SurfaceType):
         for button in self.buttons:
             button.draw(screen)
 
@@ -238,7 +238,7 @@ class CheckBoxLayout:
             elif orientation == Orientation.VERTICAL:
                 self.start_y += distance
 
-    def display(self, screen: pygame.Surface):
+    def display(self, screen: pygame.SurfaceType):
         for button in self.buttons:
             button.draw(screen)
 
@@ -310,7 +310,7 @@ class TextField:
         else:
             self.user_input += event.unicode
 
-    def update(self, screen: pygame.Surface):
+    def update(self, screen: pygame.SurfaceType):
         color = self.active_color if self.active else self.inactive_color
         pygame.draw.rect(screen, color, self.input_field, border_radius=50)
 
