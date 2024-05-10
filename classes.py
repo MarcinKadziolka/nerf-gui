@@ -89,6 +89,7 @@ class Button:
         self.pressed = False
         self.current = False
         self.active = active
+        self.is_lock = False
 
         if on_hover:
             self.hover_size = 2
@@ -130,10 +131,18 @@ class Button:
         return False
 
     def check_action(self, event: pygame.event.EventType):
+        if self.is_lock:
+            return
         return self.check_pressed(event) or self.check_clicked()
 
     def check_down(self):
         return self.clicked or self.pressed
+
+    def lock(self):
+        self.is_lock = True
+
+    def unlock(self):
+        self.is_lock = False
 
     def is_popup(self):
         pos = pygame.mouse.get_pos()
@@ -142,6 +151,8 @@ class Button:
         return False
 
     def set_size(self):
+        if self.is_lock:
+            return
         self.button = pygame.Rect(0, 0, self.width, self.height)
         self.button.center = self.x, self.y
         if self.check_down():
