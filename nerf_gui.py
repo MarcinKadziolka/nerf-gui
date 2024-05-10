@@ -25,16 +25,30 @@ def lego():
         y=checkboxes_y,
         orientation=Orientation.HORIZONTAL,
     )
+
+    ablation = CheckBoxLayout(
+        ["Pos encoding", "View direction"],
+        active={0, 1},
+        width=300,
+        distance=settings.DISTANCE,
+        x=checkboxes_x,
+        y=400,
+        orientation=Orientation.VERTICAL,
+        multiple_choice=True,
+    )
+
     while run:
         screen.fill(settings.Color.BACKGROUND.value)
         for event in pygame.event.get():
             n_samples.update(event)
+            ablation.update(event)
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     run = False
             if event.type == pygame.QUIT:
                 run = False
         n_samples.display(screen)
+        ablation.display(screen)
         pygame.display.update()
 
 
