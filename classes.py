@@ -179,10 +179,50 @@ class Button:
 
 
 class ButtonLayout:
-    def __init__(self, buttons: list[Button]) -> None:
-        if not isinstance(buttons, list):
-            raise Exception("Argument provided must a list")
-        self.buttons = buttons
+    def __init__(
+        self,
+        texts: list[str],
+        active: set[int],
+        distance: int,
+        x: int = settings.SCREEN_SIZE.mid_x,
+        y: int = settings.SCREEN_SIZE.mid_y,
+        height: int = 50,
+        width: int = 400,
+        center: bool = True,
+        orientation: Orientation = Orientation.VERTICAL,
+        inactive_color: tuple[int, int, int] = settings.Color.GRAY.value,
+    ):
+        self.num_buttons = len(texts)
+        self.buttons = []
+        self.active_ids = active
+        self.start_x = x
+        self.start_y = y
+
+        if center:
+            half_length = int(((self.num_buttons - 1) * distance) / 2)
+            if orientation == Orientation.HORIZONTAL:
+                self.start_x = x - half_length
+            elif orientation == Orientation.VERTICAL:
+                self.start_y = y - half_length
+            else:
+                raise Exception("Invalid orientation")
+
+        for i, text in enumerate(texts):
+            self.buttons.append(
+                Button(
+                    text=str(text),
+                    width=width,
+                    y=self.start_y,
+                    x=self.start_x,
+                    height=height,
+                    active=(i in self.active_ids),
+                    inactive_color=inactive_color,
+                )
+            )
+            if orientation == Orientation.HORIZONTAL:
+                self.start_x += distance
+            elif orientation == Orientation.VERTICAL:
+                self.start_y += distance
 
     def display(self, screen: pygame.SurfaceType):
         for button in self.buttons:
@@ -190,7 +230,8 @@ class ButtonLayout:
 
     def update(self, event: pygame.event.EventType):
         for button in self.buttons:
-            button.check_action(event)
+            if button.check_action(event):
+                return button
 
     def __len__(self):
         return len(self.buttons)
