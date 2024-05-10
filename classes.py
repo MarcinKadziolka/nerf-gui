@@ -22,8 +22,9 @@ class Image:
         self.x = x
         self.y = y
         self.border_size = border_size
-        self.image = pygame.image.load(image_path)
-        self.image = pygame.transform.scale_by(self.image, scale_factor)
+        self.image = pygame.transform.scale_by(
+            pygame.image.load(image_path), scale_factor
+        )
         self.rect = self.image.get_rect(center=(self.x, self.y))
         self.width = self.image.get_width()
         self.height = self.image.get_height()
