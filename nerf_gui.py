@@ -38,9 +38,26 @@ def lego():
         orientation=Orientation.VERTICAL,
         multiple_choice=True,
     )
+    locks_x = int(ablation.x - ablation.width / 2 + 20)
+    locks_scale = 1
+    lock1 = Image(
+        "lock.png",
+        x=locks_x,
+        border_size=0,
+        y=ablation.y - 3,
+        scale=locks_scale,
+    )
+    lock2 = Image(
+        "lock.png",
+        x=locks_x,
+        border_size=0,
+        y=ablation.y + ablation.distance - 3,
+        scale=locks_scale,
+    )
+    locks = [lock1, lock2]
     image = Image(
         image_path="000.png",
-        scale_factor=1.5,
+        scale=1.5,
         x=int(settings.SCREEN_SIZE.x * 2 / 6),
         y=settings.SCREEN_SIZE.mid_y - 50,
     )
