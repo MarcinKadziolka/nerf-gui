@@ -10,6 +10,39 @@ class Orientation(Enum):
     VERTICAL = 1
 
 
+class Image:
+    def __init__(
+        self,
+        image_path: str,
+        x: int = 0,
+        y: int = 0,
+        scale_factor: float = 1,
+        border_size: int = 2,
+    ) -> None:
+        self.x = x
+        self.y = y
+        self.border_size = border_size
+        self.image = pygame.image.load(image_path)
+        self.image = pygame.transform.scale_by(self.image, scale_factor)
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+
+    def draw(self, screen: pygame.SurfaceType):
+        screen.blit(self.image, (self.x, self.y))
+        if self.border_size > 0:
+            pygame.draw.rect(
+                self.image,
+                (0, 0, 0),
+                [
+                    0,
+                    0,
+                    self.width,
+                    self.height,
+                ],
+                self.border_size,
+            )
+
+
 class Button:
     def __init__(
         self,
