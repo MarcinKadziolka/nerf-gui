@@ -24,11 +24,12 @@ class Image:
         self.border_size = border_size
         self.image = pygame.image.load(image_path)
         self.image = pygame.transform.scale_by(self.image, scale_factor)
+        self.rect = self.image.get_rect(center=(self.x, self.y))
         self.width = self.image.get_width()
         self.height = self.image.get_height()
 
     def draw(self, screen: pygame.SurfaceType):
-        screen.blit(self.image, (self.x, self.y))
+        screen.blit(self.image, self.rect)
         if self.border_size > 0:
             pygame.draw.rect(
                 self.image,
