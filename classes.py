@@ -299,6 +299,7 @@ class CheckBoxLayout:
         self.multiple_choice = multiple_choice
         self.x = x
         self.y = y
+        self.is_lock = False
 
         if center:
             half_length = int(((self.num_checkboxes - 1) * distance) / 2)
@@ -351,12 +352,15 @@ class CheckBoxLayout:
                 break
 
     def lock(self):
+        self.is_lock = True
         for checkbox in self.checkboxes:
             checkbox.lock()
 
     def unlock(self):
+        self.is_lock = False
         for checkbox in self.checkboxes:
             checkbox.unlock()
+
     def __len__(self):
         return len(self.checkboxes)
 

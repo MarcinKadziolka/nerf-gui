@@ -77,14 +77,11 @@ def lego():
 
             n_samples.update(event)
             if n_samples.checkboxes[-1].active:
-                ablation.update(event)
-                for button in ablation.checkboxes:
-                    button.hover_size = 2
-                    button.hover_pop = 2
+                ablation.unlock()
             else:
-                for button in ablation.checkboxes:
-                    button.hover_size = 0
-                    button.hover_pop = 0
+                ablation.lock()
+
+            ablation.update(event)
 
             if (activated_arrow := arrows.update(event)) is not None:
                 if activated_arrow.text == "<":
@@ -102,7 +99,7 @@ def lego():
         arrows.display(screen)
         n_samples.display(screen)
         ablation.display(screen)
-        if not n_samples.checkboxes[-1].active:
+        if ablation.is_lock:
             for lock in locks:
                 lock.draw(screen)
         pygame.display.update()
