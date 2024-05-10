@@ -279,45 +279,50 @@ class CheckBoxLayout:
         inactive_color: tuple[int, int, int] = settings.Color.GRAY.value,
         multiple_choice: bool = False,
     ) -> None:
-        self.num_buttons = len(texts)
-        self.buttons = []
+        self.distance = distance
+        self.height = height
+        self.width = width
+        self.num_checkboxes = len(texts)
+        self.checkboxes = []
         self.active_ids = active
         self.multiple_choice = multiple_choice
-        self.start_x = x
-        self.start_y = y
+        self.x = x
+        self.y = y
 
         if center:
-            half_length = int(((self.num_buttons - 1) * distance) / 2)
+            half_length = int(((self.num_checkboxes - 1) * distance) / 2)
             if orientation == Orientation.HORIZONTAL:
-                self.start_x = x - half_length
+                self.x = x - half_length
             elif orientation == Orientation.VERTICAL:
-                self.start_y = y - half_length
+                self.y = y - half_length
             else:
                 raise Exception("Invalid orientation")
+        next_x = self.x
+        next_y = self.y
 
         for i, text in enumerate(texts):
-            self.buttons.append(
+            self.checkboxes.append(
                 Button(
                     text=str(text),
                     width=width,
-                    y=self.start_y,
-                    x=self.start_x,
+                    x=next_x,
+                    y=next_y,
                     height=height,
                     active=(i in self.active_ids),
                     inactive_color=inactive_color,
                 )
             )
             if orientation == Orientation.HORIZONTAL:
-                self.start_x += distance
+                next_x += distance
             elif orientation == Orientation.VERTICAL:
-                self.start_y += distance
+                next_y += distance
 
     def display(self, screen: pygame.SurfaceType):
-        for button in self.buttons:
+        for button in self.checkboxes:
             button.draw(screen)
 
     def update(self, event: pygame.event.EventType):
-        for i, button in enumerate(self.buttons):
+        for i, button in enumerate(self.checkboxes):
             if button.check_action(event):
                 if self.multiple_choice:
                     button.active = not button.active
@@ -329,13 +334,13 @@ class CheckBoxLayout:
                     self.active_ids.clear()
                     button.active = True
                     self.active_ids.add(i)
-                    for other_button in self.buttons:
+                    for other_button in self.checkboxes:
                         if other_button != button:
                             other_button.active = False
                 break
 
     def __len__(self):
-        return len(self.buttons)
+        return len(self.checkboxes)
 
 
 class TextField:
