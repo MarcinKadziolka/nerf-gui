@@ -31,7 +31,7 @@ def lego():
     ablation = CheckBoxLayout(
         ["Pos encoding", "View direction"],
         active={0, 1},
-        width=300,
+        width=350,
         distance=settings.DISTANCE,
         x=checkboxes_x,
         y=400,
