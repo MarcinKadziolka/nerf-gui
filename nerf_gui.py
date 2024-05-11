@@ -101,7 +101,6 @@ def lego():
     run = True
     play = False
     while run:
-        screen.fill(settings.Color.BACKGROUND.value)
         for event in pygame.event.get():
             folder_name = None
             index_direction = None
@@ -158,6 +157,7 @@ def lego():
             if folder_name is not None:
                 images = folders[folder_name]
 
+        screen.fill(settings.Color.BACKGROUND.value)
         images[image_idx].draw(screen)
         play_button.draw(screen)
         arrows_buttons.display(screen)
