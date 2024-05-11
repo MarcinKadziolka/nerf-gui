@@ -73,7 +73,6 @@ def lego():
         x=image.x,
         y=int(image.y + image.height / 2 + settings.DISTANCE),
     )
-
     image_idx = 0
     folder_data = {
         "dataset_dir": "sampling_dataset",
@@ -87,28 +86,48 @@ def lego():
     while run:
         screen.fill(settings.Color.BACKGROUND.value)
         for event in pygame.event.get():
+            if n_samples.update(event):
+                active_checkbox = n_samples.get_active()[0]
+                if active_checkbox.text == "128":
+                    ablation.unlock()
+                else:
+                    ablation["Pos encoding"].active = True
+                    ablation["View direction"].active = True
+                    folder_data["pos_encoding"] = ablation["Pos encoding"].active
+                    folder_data["view_dirs"] = ablation["View direction"].active
+                    ablation.lock()
 
-            n_samples.update(event)
-            if n_samples.checkboxes[-1].active:
-                ablation.unlock()
-            else:
-                ablation.lock()
+                folder_data["n_samples"] = active_checkbox.text
 
-            ablation.update(event)
+                folder_path = construct_folder_path(folder_data)
+
+                images = load_images(folder_path)
+
+            if ablation.update(event):
+                folder_data["pos_encoding"] = ablation["Pos encoding"].active
+                folder_data["view_dirs"] = ablation["View direction"].active
+
+                folder_path = construct_folder_path(folder_data)
+
+                images = load_images(folder_path)
 
             if (activated_arrow := arrows.update(event)) is not None:
-                if activated_arrow.text == "<":
-                    pass
-                elif activated_arrow.text == ">":
-                    pass
+                if activated_arrow.text == ">":
+                    image_idx = next_idx(image_idx, max_idx)
+                elif activated_arrow.text == "<":
+                    image_idx = previous_idx(image_idx, max_idx)
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     run = False
+                if event.key == pygame.K_RIGHT:
+                    image_idx = next_idx(image_idx, max_idx)
+                if event.key == pygame.K_LEFT:
+                    image_idx = previous_idx(image_idx, max_idx)
             if event.type == pygame.QUIT:
                 run = False
 
-        image.draw(screen)
+        images[image_idx].draw(screen)
         arrows.display(screen)
         n_samples.display(screen)
         ablation.display(screen)
