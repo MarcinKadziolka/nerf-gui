@@ -19,3 +19,9 @@ def draw_text(
     if center:
         text_rect.center = x, y
     screen.blit(text_obj, text_rect)
+def next_idx(image_idx, max_idx):
+    return 0 if image_idx == max_idx else image_idx + 1
+
+
+def previous_idx(image_idx, max_idx):
+    return max_idx if image_idx == 0 else image_idx - 1
