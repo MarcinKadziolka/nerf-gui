@@ -110,11 +110,11 @@ def lego():
 
                 images = load_images(folder_path)
 
-            if (activated_arrow := arrows.update(event)) is not None:
-                if activated_arrow.text == ">":
-                    image_idx = next_idx(image_idx, max_idx)
-                elif activated_arrow.text == "<":
+            if arrows.update(event):
+                if arrows["<"].action:
                     image_idx = previous_idx(image_idx, max_idx)
+                elif arrows[">"].action:
+                    image_idx = next_idx(image_idx, max_idx)
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
