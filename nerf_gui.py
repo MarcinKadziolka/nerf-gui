@@ -86,8 +86,8 @@ def lego():
         screen.fill(settings.Color.BACKGROUND.value)
         for event in pygame.event.get():
             if n_samples.update(event):
-                active_checkbox = n_samples.get_active()[0]
-                if active_checkbox.text == "128":
+                active_samples_checkbox = n_samples.get_active()[0]
+                if active_samples_checkbox.text == "128":
                     ablation.unlock()
                 else:
                     ablation["Pos encoding"].active = True
@@ -96,7 +96,7 @@ def lego():
                     folder_data["view_dirs"] = ablation["View direction"].active
                     ablation.lock()
 
-                folder_data["n_samples"] = active_checkbox.text
+                folder_data["n_samples"] = active_samples_checkbox.text
 
                 folder_path = construct_folder_path(folder_data)
 
