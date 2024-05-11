@@ -2,7 +2,6 @@ import settings
 import pygame
 import classes
 import os
-from os import listdir
 
 
 def draw_text(
