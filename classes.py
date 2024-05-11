@@ -3,6 +3,7 @@ import functions
 import settings
 from enum import Enum
 from collections import defaultdict
+from typing import Optional
 
 
 class Orientation(Enum):
@@ -309,7 +310,6 @@ class CheckBoxLayout:
                 raise Exception("Invalid orientation")
         next_x = self.x
         next_y = self.y
-
         for i, text in enumerate(texts):
             self.checkboxes[text] = Button(
                 text=str(text),
@@ -334,6 +334,13 @@ class CheckBoxLayout:
             raise TypeError(
                 f"Expected checkbox to be a str or int, got {type(checkbox).__name__} instead."
             )
+
+    def get_active(self):
+        active_checkboxes = []
+        for checkbox in self.checkboxes.values():
+            if checkbox.active:
+                active_checkboxes.append(checkbox)
+        return active_checkboxes
 
     def display(self, screen: pygame.SurfaceType):
         for button in self.checkboxes.values():
