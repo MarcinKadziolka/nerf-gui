@@ -21,7 +21,7 @@ def lego():
     small_button_width = 70
     n_samples = CheckBoxLayout(
         ["16", "32", "64", "128"],
-        active={3},
+        active_ids=[3],
         width=small_button_width,
         distance=settings.DISTANCE + 10,
         x=checkboxes_x,
@@ -30,7 +30,7 @@ def lego():
     )
     ablation = CheckBoxLayout(
         ["Pos encoding", "View direction"],
-        active={0, 1},
+        active_ids=[0, 1],
         width=350,
         distance=settings.DISTANCE,
         x=checkboxes_x,
@@ -63,7 +63,7 @@ def lego():
     )
     arrows = ButtonLayout(
         ["<", ">"],
-        active={0, 1},
+        active_ids=[0, 1],
         width=small_button_width,
         distance=settings.DISTANCE,
         orientation=Orientation.HORIZONTAL,
