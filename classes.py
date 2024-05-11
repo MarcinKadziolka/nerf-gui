@@ -89,8 +89,9 @@ class Button:
         self.clicked = False
         self.pressed = False
         self.current = False
-        self.active = active
+        self.action = False
         self.is_lock = False
+        self.active = active
 
         if on_hover:
             self.hover_size = 2
@@ -131,10 +132,14 @@ class Button:
                 return True
         return False
 
-    def check_action(self, event: pygame.event.EventType):
+    def set_action(self, event: pygame.event.EventType):
         if self.is_lock:
             return
-        return self.check_pressed(event) or self.check_clicked()
+        if self.check_pressed(event) or self.check_clicked():
+            self.action = True
+        else:
+            self.action = False
+        return self.action
 
     def check_down(self):
         return self.clicked or self.pressed
@@ -203,7 +208,7 @@ class ButtonLayout:
         inactive_color: tuple[int, int, int] = settings.Color.GRAY.value,
     ):
         self.num_buttons = len(texts)
-        self.buttons = []
+        self.buttons = {}
         self.start_x = x
         self.start_y = y
 
@@ -217,30 +222,44 @@ class ButtonLayout:
                 raise Exception("Invalid orientation")
 
         for i, text in enumerate(texts):
-            self.buttons.append(
-                Button(
-                    text=str(text),
-                    width=width,
-                    y=self.start_y,
-                    x=self.start_x,
-                    height=height,
-                    active=(i in active_ids),
-                    inactive_color=inactive_color,
-                )
+            self.buttons[text] = Button(
+                text=str(text),
+                width=width,
+                y=self.start_y,
+                x=self.start_x,
+                height=height,
+                active=(i in active_ids),
+                inactive_color=inactive_color,
             )
             if orientation == Orientation.HORIZONTAL:
                 self.start_x += distance
             elif orientation == Orientation.VERTICAL:
                 self.start_y += distance
 
+    def __getitem__(self, button: Optional[str | int]) -> Button:
+        if isinstance(button, str):
+            return self.buttons[button]
+        elif isinstance(button, int):
+            return list(self.buttons.values())[button]
+        else:
+            raise TypeError(
+                f"Expected checkbox to be a str or int, got {type(button).__name__} instead."
+            )
+
     def display(self, screen: pygame.SurfaceType):
-        for button in self.buttons:
+        for button in self.buttons.values():
             button.draw(screen)
 
-    def update(self, event: pygame.event.EventType):
-        for button in self.buttons:
-            if button.check_action(event):
+    def get_active(self) -> Optional[Button]:
+        for button in self.buttons.values():
+            if button.active:
                 return button
+
+    def update(self, event: pygame.event.EventType):
+        for button in self.buttons.values():
+            if button.set_action(event):
+                return True
+        return False
 
     def __len__(self):
         return len(self.buttons)
