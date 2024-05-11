@@ -1,6 +1,6 @@
 import pygame
-import functions
 import settings
+import os
 from enum import Enum
 from collections import defaultdict
 from typing import Optional
@@ -183,7 +183,7 @@ class Button:
             self.button,
             border_radius=self.border_radius,
         )
-        functions.draw_text(
+        draw_text(
             text=self.text,
             text_color=self.text_color,
             font=self.font,
@@ -443,7 +443,7 @@ class TextField:
         color = self.active_color if self.active else self.inactive_color
         pygame.draw.rect(screen, color, self.input_field, border_radius=50)
 
-        functions.draw_text(
+        draw_text(
             text=self.user_input,
             font=self.font,
             text_color=self.text_color,
@@ -462,3 +462,73 @@ class TextField:
                 self.user_input = self.user_input[:-1]
         else:
             self.delete_wait = self.fast_delete_activation
+
+
+def draw_text(
+    text,
+    screen: pygame.Surface,
+    x: int = settings.SCREEN_SIZE.mid_x,
+    y: int = settings.SCREEN_SIZE.mid_y,
+    center: bool = True,
+    text_color: tuple[int, int, int] = settings.Color.BLACK.value,
+    font: pygame.font.FontType = settings.main_font_small,
+):
+    text_obj = font.render(str(text), True, text_color)
+    text_rect = text_obj.get_rect(topleft=(x, y))
+    if center:
+        text_rect.center = x, y
+    screen.blit(text_obj, text_rect)
+
+
+def construct_folder_name(folder_data: dict[str, str]):
+    pos_encoding = folder_data["pos_encoding"]
+    view_dirs = folder_data["view_dirs"]
+    n_samples = folder_data["n_samples"]
+    folder_name = (
+        f"lego_pos_encoding_{pos_encoding}_view_dirs_{view_dirs}_64_{n_samples}"
+    )
+    return folder_name
+
+
+def load_images(folder_path: str) -> list[Image]:
+    images = []
+    for image_name in sorted(os.listdir(folder_path)):
+        image_path = os.path.join(folder_path, image_name)
+        images.append(
+            Image(
+                image_path=image_path,
+                scale=1.5,
+                x=int(settings.SCREEN_SIZE.x * 2 / 6),
+                y=settings.SCREEN_SIZE.mid_y - 50,
+            )
+        )
+    return images
+
+
+def load_all_folders(dataset_dir: str):
+    folders = {}
+    for folder_name in sorted(os.listdir(dataset_dir)):
+        folder_path = os.path.join(dataset_dir, folder_name, "video_200000")
+        images = load_images(folder_path=folder_path)
+        folders[folder_name] = images
+    return folders
+
+
+class Indexing(Enum):
+    PREVIOUS = 0
+    NEXT = 1
+
+
+def set_idx(image_idx, max_idx, direction):
+    if direction == Indexing.NEXT:
+        return next_idx(image_idx, max_idx)
+    elif direction == Indexing.PREVIOUS:
+        return previous_idx(image_idx, max_idx)
+
+
+def next_idx(image_idx, max_idx):
+    return 0 if image_idx == max_idx else image_idx + 1
+
+
+def previous_idx(image_idx, max_idx):
+    return max_idx if image_idx == 0 else image_idx - 1

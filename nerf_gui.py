@@ -1,15 +1,19 @@
 import os
 import time
+
 import pygame
 
-from functions import construct_folder_path, load_images, next_idx, previous_idx
 import settings
-from classes import (
+from helpers import (
     Button,
     ButtonLayout,
     CheckBoxLayout,
     Image,
     Orientation,
+    Indexing,
+    load_all_folders,
+    construct_folder_name,
+    set_idx,
 )
 
 os.environ["SDL_VIDEO_CENTERED"] = "1"
@@ -88,8 +92,10 @@ def lego():
         "view_dirs": ablation_checkboxes["View direction"].active,
         "n_samples": samples_checkboxes.get_active_checkboxes()[0].text,
     }
-    folder_path = construct_folder_path(folder_data)
-    images = load_images(folder_path)
+
+    folders = load_all_folders("sampling_dataset")
+    folder_name = construct_folder_name(folder_data)
+    images = folders[folder_name]
     image_idx = 0
     max_idx = len(images) - 1
     run = True
@@ -97,6 +103,9 @@ def lego():
     while run:
         screen.fill(settings.Color.BACKGROUND.value)
         for event in pygame.event.get():
+            folder_name = None
+            index_direction = None
+
             if samples_checkboxes.update(event):
                 active_samples_checkbox = samples_checkboxes.get_active_checkboxes()[0]
                 if active_samples_checkbox.text == "128":
@@ -114,40 +123,41 @@ def lego():
 
                 folder_data["n_samples"] = active_samples_checkbox.text
 
-                folder_path = construct_folder_path(folder_data)
-
-                images = load_images(folder_path)
+                folder_name = construct_folder_name(folder_data)
 
             if ablation_checkboxes.update(event):
                 folder_data["pos_encoding"] = ablation_checkboxes["Pos encoding"].active
                 folder_data["view_dirs"] = ablation_checkboxes["View direction"].active
 
-                folder_path = construct_folder_path(folder_data)
-
-                images = load_images(folder_path)
+                folder_name = construct_folder_name(folder_data)
 
             if arrows_buttons.update(event):
+                play = False
+                play_button.text = "Play"
                 if arrows_buttons["<"].action:
-                    image_idx = previous_idx(image_idx, max_idx)
+                    index_direction = Indexing.PREVIOUS
                 elif arrows_buttons[">"].action:
-                    image_idx = next_idx(image_idx, max_idx)
+                    index_direction = Indexing.NEXT
 
             if play_button.set_action(event):
                 play = not play
-                if play:
-                    play_button.text = "Stop"
-                else:
-                    play_button.text = "Play"
+                play_button.text = "Stop" if play else "Play"
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     run = False
-                if event.key == pygame.K_RIGHT:
-                    image_idx = next_idx(image_idx, max_idx)
                 if event.key == pygame.K_LEFT:
-                    image_idx = previous_idx(image_idx, max_idx)
+                    index_direction = Indexing.PREVIOUS
+                if event.key == pygame.K_RIGHT:
+                    index_direction = Indexing.NEXT
             if event.type == pygame.QUIT:
                 run = False
+
+            if index_direction is not None:
+                image_idx = set_idx(image_idx, max_idx, index_direction)
+            if folder_name is not None:
+                images = folders[folder_name]
+
         images[image_idx].draw(screen)
         play_button.draw(screen)
         arrows_buttons.display(screen)
@@ -158,7 +168,7 @@ def lego():
                 lock.draw(screen)
         if play:
             time.sleep(0.07)
-            image_idx = next_idx(image_idx, max_idx)
+            image_idx = set_idx(image_idx, max_idx, Indexing.NEXT)
         pygame.display.update()
 
 
