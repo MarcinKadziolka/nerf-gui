@@ -278,7 +278,7 @@ class CheckBoxLayout:
     def __init__(
         self,
         texts: list[str],
-        active: set[int],
+        active_ids: list[int],
         distance: int,
         x: int = settings.SCREEN_SIZE.mid_x,
         y: int = settings.SCREEN_SIZE.mid_y,
@@ -292,9 +292,8 @@ class CheckBoxLayout:
         self.distance = distance
         self.height = height
         self.width = width
+        self.checkboxes = {}
         self.num_checkboxes = len(texts)
-        self.checkboxes = []
-        self.active_ids = active
         self.multiple_choice = multiple_choice
         self.x = x
         self.y = y
@@ -312,52 +311,46 @@ class CheckBoxLayout:
         next_y = self.y
 
         for i, text in enumerate(texts):
-            self.checkboxes.append(
-                Button(
-                    text=str(text),
-                    width=width,
-                    x=next_x,
-                    y=next_y,
-                    height=height,
-                    active=(i in self.active_ids),
-                    inactive_color=inactive_color,
-                )
+            self.checkboxes[text] = Button(
+                text=str(text),
+                width=width,
+                x=next_x,
+                y=next_y,
+                height=height,
+                active=(i in active_ids),
+                inactive_color=inactive_color,
             )
             if orientation == Orientation.HORIZONTAL:
                 next_x += distance
             elif orientation == Orientation.VERTICAL:
                 next_y += distance
 
+
     def display(self, screen: pygame.SurfaceType):
-        for button in self.checkboxes:
+        for button in self.checkboxes.values():
             button.draw(screen)
 
     def update(self, event: pygame.event.EventType):
-        for i, button in enumerate(self.checkboxes):
-            if button.check_action(event):
+        for _, checkbox in enumerate(self.checkboxes.values()):
+            if checkbox.check_action(event):
                 if self.multiple_choice:
-                    button.active = not button.active
-                    if button.active:
-                        self.active_ids.add(i)
-                    else:
-                        self.active_ids.discard(i)
+                    checkbox.active = not checkbox.active
                 else:
-                    self.active_ids.clear()
-                    button.active = True
-                    self.active_ids.add(i)
-                    for other_button in self.checkboxes:
-                        if other_button != button:
-                            other_button.active = False
-                break
+                    checkbox.active = True
+                    for other_checkbox in self.checkboxes.values():
+                        if other_checkbox != checkbox:
+                            other_checkbox.active = False
+                return True
+        return False
 
     def lock(self):
         self.is_lock = True
-        for checkbox in self.checkboxes:
+        for checkbox in self.checkboxes.values():
             checkbox.lock()
 
     def unlock(self):
         self.is_lock = False
-        for checkbox in self.checkboxes:
+        for checkbox in self.checkboxes.values():
             checkbox.unlock()
 
     def __len__(self):
