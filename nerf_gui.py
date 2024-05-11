@@ -19,7 +19,7 @@ from helpers import (
 os.environ["SDL_VIDEO_CENTERED"] = "1"
 pygame.init()
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-pygame.display.set_caption("Quick Maths")
+pygame.display.set_caption("Nerf gui")
 
 
 def initialize_layouts():
