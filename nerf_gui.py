@@ -1,12 +1,15 @@
+import os
+
 import pygame
+
+from functions import construct_folder_path, load_images, next_idx, previous_idx
 import settings
 from classes import (
     ButtonLayout,
     CheckBoxLayout,
-    Orientation,
     Image,
+    Orientation,
 )
-import os
 
 os.environ["SDL_VIDEO_CENTERED"] = "1"
 pygame.init()
