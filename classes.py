@@ -191,7 +191,7 @@ class ButtonLayout:
     def __init__(
         self,
         texts: list[str],
-        active: set[int],
+        active_ids: list[int],
         distance: int,
         x: int = settings.SCREEN_SIZE.mid_x,
         y: int = settings.SCREEN_SIZE.mid_y,
@@ -203,7 +203,6 @@ class ButtonLayout:
     ):
         self.num_buttons = len(texts)
         self.buttons = []
-        self.active_ids = active
         self.start_x = x
         self.start_y = y
 
@@ -224,7 +223,7 @@ class ButtonLayout:
                     y=self.start_y,
                     x=self.start_x,
                     height=height,
-                    active=(i in self.active_ids),
+                    active=(i in active_ids),
                     inactive_color=inactive_color,
                 )
             )
