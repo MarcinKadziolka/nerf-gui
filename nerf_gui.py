@@ -17,8 +17,7 @@ screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 pygame.display.set_caption("Quick Maths")
 
 
-def lego():
-    run = True
+def initialize_layouts():
     checkboxes_x = settings.SCREEN_SIZE.right_third
     checkboxes_y = 600
     small_button_width = 70
@@ -58,21 +57,21 @@ def lego():
         scale=locks_scale,
     )
     locks = [lock1, lock2]
-    image = Image(
-        image_path="000.png",
-        scale=1.5,
-        x=int(settings.SCREEN_SIZE.x * 2 / 6),
-        y=settings.SCREEN_SIZE.mid_y - 50,
-    )
     arrows = ButtonLayout(
         ["<", ">"],
         active_ids=[0, 1],
         width=small_button_width,
         distance=settings.DISTANCE,
         orientation=Orientation.HORIZONTAL,
-        x=image.x,
-        y=int(image.y + image.height / 2 + settings.DISTANCE),
+        x=int(settings.SCREEN_SIZE.x * 2 / 6),
+        y=int(settings.SCREEN_SIZE.mid_y - 50 + 600 / 2 + settings.DISTANCE),
     )
+    return n_samples, ablation, locks, arrows
+
+
+def lego():
+    n_samples, ablation, locks, arrows = initialize_layouts()
+    run = True
     image_idx = 0
     folder_data = {
         "dataset_dir": "sampling_dataset",
