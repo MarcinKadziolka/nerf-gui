@@ -346,16 +346,18 @@ class CheckBoxLayout:
         for button in self.checkboxes.values():
             button.draw(screen)
 
+    def deactivate_all_checkboxes(self):
+        for checkbox in self.checkboxes.values():
+            checkbox.active = False
+
     def update(self, event: pygame.event.EventType):
         for _, checkbox in enumerate(self.checkboxes.values()):
-            if checkbox.check_action(event):
+            if checkbox.set_action(event):
                 if self.multiple_choice:
                     checkbox.active = not checkbox.active
                 else:
+                    self.deactivate_all_checkboxes()
                     checkbox.active = True
-                    for other_checkbox in self.checkboxes.values():
-                        if other_checkbox != checkbox:
-                            other_checkbox.active = False
                 return True
         return False
 
