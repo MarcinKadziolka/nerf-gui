@@ -325,6 +325,15 @@ class CheckBoxLayout:
             elif orientation == Orientation.VERTICAL:
                 next_y += distance
 
+    def __getitem__(self, checkbox: Optional[str | int]) -> Button:
+        if isinstance(checkbox, str):
+            return self.checkboxes[checkbox]
+        elif isinstance(checkbox, int):
+            return list(self.checkboxes.values())[checkbox]
+        else:
+            raise TypeError(
+                f"Expected checkbox to be a str or int, got {type(checkbox).__name__} instead."
+            )
 
     def display(self, screen: pygame.SurfaceType):
         for button in self.checkboxes.values():
