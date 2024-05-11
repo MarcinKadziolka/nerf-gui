@@ -354,7 +354,7 @@ class CheckBoxLayout:
                 f"Expected checkbox to be a str or int, got {type(checkbox).__name__} instead."
             )
 
-    def get_active(self):
+    def get_active_checkboxes(self):
         active_checkboxes = []
         for checkbox in self.checkboxes.values():
             if checkbox.active:

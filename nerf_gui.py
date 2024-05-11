@@ -71,22 +71,22 @@ def initialize_layouts():
 
 def lego():
     n_samples, ablation, locks, arrows = initialize_layouts()
-    run = True
-    image_idx = 0
     folder_data = {
         "dataset_dir": "sampling_dataset",
         "pos_encoding": ablation["Pos encoding"].active,
         "view_dirs": ablation["View direction"].active,
-        "n_samples": n_samples.get_active()[0].text,
+        "n_samples": n_samples.get_active_checkboxes()[0].text,
     }
     folder_path = construct_folder_path(folder_data)
     images = load_images(folder_path)
+    image_idx = 0
     max_idx = len(images) - 1
+    run = True
     while run:
         screen.fill(settings.Color.BACKGROUND.value)
         for event in pygame.event.get():
             if n_samples.update(event):
-                active_samples_checkbox = n_samples.get_active()[0]
+                active_samples_checkbox = n_samples.get_active_checkboxes()[0]
                 if active_samples_checkbox.text == "128":
                     ablation.unlock()
                 else:
