@@ -101,34 +101,13 @@ def lego():
     run = True
     play = False
     while run:
+        update_folder = False
         for event in pygame.event.get():
             folder_name = None
             index_direction = None
 
-            if samples_checkboxes.update(event):
-                active_samples_checkbox = samples_checkboxes.get_active_checkboxes()[0]
-                if active_samples_checkbox.text == "128":
-                    ablation_checkboxes.unlock()
-                else:
-                    ablation_checkboxes["Pos encoding"].active = True
-                    ablation_checkboxes["View direction"].active = True
-                    folder_data["pos_encoding"] = ablation_checkboxes[
-                        "Pos encoding"
-                    ].active
-                    folder_data["view_dirs"] = ablation_checkboxes[
-                        "View direction"
-                    ].active
-                    ablation_checkboxes.lock()
-
-                folder_data["n_samples"] = active_samples_checkbox.text
-
-                folder_name = construct_folder_name(folder_data)
-
-            if ablation_checkboxes.update(event):
-                folder_data["pos_encoding"] = ablation_checkboxes["Pos encoding"].active
-                folder_data["view_dirs"] = ablation_checkboxes["View direction"].active
-
-                folder_name = construct_folder_name(folder_data)
+            if samples_checkboxes.update(event) or ablation_checkboxes.update(event):
+                update_folder = True
 
             if arrows_buttons.update(event):
                 play = False
@@ -154,8 +133,21 @@ def lego():
 
             if index_direction is not None:
                 image_idx = set_idx(image_idx, max_idx, index_direction)
-            if folder_name is not None:
-                images = folders[folder_name]
+
+        if update_folder:
+            active_samples_checkbox = samples_checkboxes.get_active_checkboxes()[0]
+            if active_samples_checkbox.text == "128":
+                ablation_checkboxes.unlock()
+            else:
+                ablation_checkboxes["Pos encoding"].active = True
+                ablation_checkboxes["View direction"].active = True
+                ablation_checkboxes.lock()
+
+            folder_data["n_samples"] = active_samples_checkbox.text
+            folder_data["pos_encoding"] = ablation_checkboxes["Pos encoding"].active
+            folder_data["view_dirs"] = ablation_checkboxes["View direction"].active
+            folder_name = construct_folder_name(folder_data)
+            images = folders[folder_name]
 
         screen.fill(settings.Color.BACKGROUND.value)
         images[image_idx].draw(screen)
