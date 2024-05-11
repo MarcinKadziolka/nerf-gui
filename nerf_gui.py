@@ -1,10 +1,11 @@
 import os
-
+import time
 import pygame
 
 from functions import construct_folder_path, load_images, next_idx, previous_idx
 import settings
 from classes import (
+    Button,
     ButtonLayout,
     CheckBoxLayout,
     Image,
@@ -57,6 +58,7 @@ def initialize_layouts():
         scale=locks_scale,
     )
     locks = [lock1, lock2]
+    media_buttons_y = int(settings.SCREEN_SIZE.mid_y - 50 + 600 / 2 + settings.DISTANCE)
     arrows = ButtonLayout(
         ["<", ">"],
         active_ids=[0, 1],
@@ -64,37 +66,51 @@ def initialize_layouts():
         distance=settings.DISTANCE,
         orientation=Orientation.HORIZONTAL,
         x=int(settings.SCREEN_SIZE.x * 2 / 6),
-        y=int(settings.SCREEN_SIZE.mid_y - 50 + 600 / 2 + settings.DISTANCE),
+        y=media_buttons_y,
     )
-    return n_samples, ablation, locks, arrows
+    play_button = Button(
+        text="Play",
+        y=media_buttons_y,
+        x=settings.SCREEN_SIZE.left_third,
+        width=200,
+        active=True,
+    )
+    return n_samples, ablation, locks, arrows, play_button
 
 
 def lego():
-    n_samples, ablation, locks, arrows = initialize_layouts()
+    samples_checkboxes, ablation_checkboxes, locks, arrows_buttons, play_button = (
+        initialize_layouts()
+    )
     folder_data = {
         "dataset_dir": "sampling_dataset",
-        "pos_encoding": ablation["Pos encoding"].active,
-        "view_dirs": ablation["View direction"].active,
-        "n_samples": n_samples.get_active_checkboxes()[0].text,
+        "pos_encoding": ablation_checkboxes["Pos encoding"].active,
+        "view_dirs": ablation_checkboxes["View direction"].active,
+        "n_samples": samples_checkboxes.get_active_checkboxes()[0].text,
     }
     folder_path = construct_folder_path(folder_data)
     images = load_images(folder_path)
     image_idx = 0
     max_idx = len(images) - 1
     run = True
+    play = False
     while run:
         screen.fill(settings.Color.BACKGROUND.value)
         for event in pygame.event.get():
-            if n_samples.update(event):
-                active_samples_checkbox = n_samples.get_active_checkboxes()[0]
+            if samples_checkboxes.update(event):
+                active_samples_checkbox = samples_checkboxes.get_active_checkboxes()[0]
                 if active_samples_checkbox.text == "128":
-                    ablation.unlock()
+                    ablation_checkboxes.unlock()
                 else:
-                    ablation["Pos encoding"].active = True
-                    ablation["View direction"].active = True
-                    folder_data["pos_encoding"] = ablation["Pos encoding"].active
-                    folder_data["view_dirs"] = ablation["View direction"].active
-                    ablation.lock()
+                    ablation_checkboxes["Pos encoding"].active = True
+                    ablation_checkboxes["View direction"].active = True
+                    folder_data["pos_encoding"] = ablation_checkboxes[
+                        "Pos encoding"
+                    ].active
+                    folder_data["view_dirs"] = ablation_checkboxes[
+                        "View direction"
+                    ].active
+                    ablation_checkboxes.lock()
 
                 folder_data["n_samples"] = active_samples_checkbox.text
 
@@ -102,19 +118,26 @@ def lego():
 
                 images = load_images(folder_path)
 
-            if ablation.update(event):
-                folder_data["pos_encoding"] = ablation["Pos encoding"].active
-                folder_data["view_dirs"] = ablation["View direction"].active
+            if ablation_checkboxes.update(event):
+                folder_data["pos_encoding"] = ablation_checkboxes["Pos encoding"].active
+                folder_data["view_dirs"] = ablation_checkboxes["View direction"].active
 
                 folder_path = construct_folder_path(folder_data)
 
                 images = load_images(folder_path)
 
-            if arrows.update(event):
-                if arrows["<"].action:
+            if arrows_buttons.update(event):
+                if arrows_buttons["<"].action:
                     image_idx = previous_idx(image_idx, max_idx)
-                elif arrows[">"].action:
+                elif arrows_buttons[">"].action:
                     image_idx = next_idx(image_idx, max_idx)
+
+            if play_button.set_action(event):
+                play = not play
+                if play:
+                    play_button.text = "Stop"
+                else:
+                    play_button.text = "Play"
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
@@ -125,14 +148,17 @@ def lego():
                     image_idx = previous_idx(image_idx, max_idx)
             if event.type == pygame.QUIT:
                 run = False
-
         images[image_idx].draw(screen)
-        arrows.display(screen)
-        n_samples.display(screen)
-        ablation.display(screen)
-        if ablation.is_lock:
+        play_button.draw(screen)
+        arrows_buttons.display(screen)
+        samples_checkboxes.display(screen)
+        ablation_checkboxes.display(screen)
+        if ablation_checkboxes.is_lock:
             for lock in locks:
                 lock.draw(screen)
+        if play:
+            time.sleep(0.07)
+            image_idx = next_idx(image_idx, max_idx)
         pygame.display.update()
 
 
