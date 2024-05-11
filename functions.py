@@ -19,6 +19,21 @@ def draw_text(
     if center:
         text_rect.center = x, y
     screen.blit(text_obj, text_rect)
+def load_images(folder_path: str) -> list[classes.Image]:
+    images = []
+    for image_name in sorted(os.listdir(folder_path)):
+        image_path = os.path.join(folder_path, image_name)
+        images.append(
+            classes.Image(
+                image_path=image_path,
+                scale=1.5,
+                x=int(settings.SCREEN_SIZE.x * 2 / 6),
+                y=settings.SCREEN_SIZE.mid_y - 50,
+            )
+        )
+    return images
+
+
 def next_idx(image_idx, max_idx):
     return 0 if image_idx == max_idx else image_idx + 1
 
