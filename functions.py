@@ -1,8 +1,8 @@
-import datetime
-import sqlite3
 import settings
-import random
 import pygame
+import classes
+import os
+from os import listdir
 
 
 def draw_text(
@@ -19,6 +19,20 @@ def draw_text(
     if center:
         text_rect.center = x, y
     screen.blit(text_obj, text_rect)
+
+
+def construct_folder_path(folder_data: dict[str, str]):
+    dataset_dir = folder_data["dataset_dir"]
+    pos_encoding = folder_data["pos_encoding"]
+    view_dirs = folder_data["view_dirs"]
+    n_samples = folder_data["n_samples"]
+    folder_name = (
+        f"lego_pos_encoding_{pos_encoding}_view_dirs_{view_dirs}_64_{n_samples}"
+    )
+    folder_path = os.path.join(dataset_dir, folder_name, "video_200000")
+    return folder_path
+
+
 def load_images(folder_path: str) -> list[classes.Image]:
     images = []
     for image_name in sorted(os.listdir(folder_path)):
