@@ -100,7 +100,7 @@ class Button:
             self.hover_size = 0
             self.hover_pop = 0
 
-    def get_color(self):
+    def get_color(self) -> tuple[int, int, int]:
         if self.active and self.current:
             return self.active_and_current_color
         elif self.current:
@@ -110,7 +110,7 @@ class Button:
         else:
             return self.inactive_color
 
-    def check_clicked(self):
+    def check_clicked(self) -> bool:
         pos = pygame.mouse.get_pos()
         left_click = pygame.mouse.get_pressed()[0]
         if self.button.collidepoint(pos) and left_click and not self.clicked:
@@ -132,16 +132,16 @@ class Button:
                 return True
         return False
 
-    def set_action(self, event: pygame.event.EventType):
+    def set_action(self, event: pygame.event.EventType) -> bool:
         if self.is_lock:
-            return
+            return False
         if self.check_pressed(event) or self.check_clicked():
             self.action = True
         else:
             self.action = False
         return self.action
 
-    def check_down(self):
+    def check_down(self) -> bool:
         return self.clicked or self.pressed
 
     def lock(self):
@@ -150,7 +150,7 @@ class Button:
     def unlock(self):
         self.is_lock = False
 
-    def is_popup(self):
+    def is_popup(self) -> bool:
         pos = pygame.mouse.get_pos()
         if self.button.collidepoint(pos) or self.current:
             return True
@@ -255,7 +255,7 @@ class ButtonLayout:
             if button.active:
                 return button
 
-    def update(self, event: pygame.event.EventType):
+    def update(self, event: pygame.event.EventType) -> bool:
         for button in self.buttons.values():
             if button.set_action(event):
                 return True
@@ -354,7 +354,7 @@ class CheckBoxLayout:
                 f"Expected checkbox to be a str or int, got {type(checkbox).__name__} instead."
             )
 
-    def get_active_checkboxes(self):
+    def get_active_checkboxes(self) -> list[Button]:
         active_checkboxes = []
         for checkbox in self.checkboxes.values():
             if checkbox.active:
@@ -369,7 +369,7 @@ class CheckBoxLayout:
         for checkbox in self.checkboxes.values():
             checkbox.active = False
 
-    def update(self, event: pygame.event.EventType):
+    def update(self, event: pygame.event.EventType) -> bool:
         for _, checkbox in enumerate(self.checkboxes.values()):
             if checkbox.set_action(event):
                 if self.multiple_choice:
@@ -480,7 +480,7 @@ def draw_text(
     screen.blit(text_obj, text_rect)
 
 
-def construct_folder_name(folder_data: dict[str, str]):
+def construct_folder_name(folder_data: dict[str, str]) -> str:
     pos_encoding = folder_data["pos_encoding"]
     view_dirs = folder_data["view_dirs"]
     n_samples = folder_data["n_samples"]
@@ -505,7 +505,7 @@ def load_images(folder_path: str) -> list[Image]:
     return images
 
 
-def load_all_folders(dataset_dir: str):
+def load_all_folders(dataset_dir: str) -> dict[str, list[Image]]:
     folders = {}
     for folder_name in sorted(os.listdir(dataset_dir)):
         folder_path = os.path.join(dataset_dir, folder_name, "video_200000")
@@ -519,16 +519,16 @@ class Indexing(Enum):
     NEXT = 1
 
 
-def set_idx(image_idx, max_idx, direction):
+def set_idx(image_idx: int, max_idx: int, direction: Indexing):
     if direction == Indexing.NEXT:
         return next_idx(image_idx, max_idx)
     elif direction == Indexing.PREVIOUS:
         return previous_idx(image_idx, max_idx)
 
 
-def next_idx(image_idx, max_idx):
+def next_idx(image_idx: int, max_idx: int):
     return 0 if image_idx == max_idx else image_idx + 1
 
 
-def previous_idx(image_idx, max_idx):
+def previous_idx(image_idx: int, max_idx: int):
     return max_idx if image_idx == 0 else image_idx - 1
