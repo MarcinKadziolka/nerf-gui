@@ -12,6 +12,8 @@ class Orientation(Enum):
 
 
 class Image:
+    """Stores image, its attributes and draws it."""
+
     def __init__(
         self,
         image_path: str,
@@ -20,6 +22,15 @@ class Image:
         scale: float = 1,
         border_size: int = 0,
     ) -> None:
+        """Load an image from given path.
+
+        Args:
+            image_path: path to an image.
+            x: position the image center on the x coordinate.
+            y: position the image center on the y coordinate.
+            scale: reduce or enlarge image.
+            border_size: display black border around the image when drawing.
+        """
         self.x = x
         self.y = y
         self.border_size = border_size
@@ -45,11 +56,13 @@ class Image:
 
 
 class Button:
+    """Creates all necessary button functionality."""
+
     def __init__(
         self,
         text: str = "Button",
-        y: int = settings.SCREEN_SIZE.mid_y,
         x: int = settings.SCREEN_SIZE.mid_x,
+        y: int = settings.SCREEN_SIZE.mid_y,
         width: int = 400,
         height: int = 50,
         font: pygame.font.FontType = settings.main_font_small,
@@ -64,6 +77,24 @@ class Button:
         active: bool = False,
         on_hover: bool = True,
     ):
+        """Creates button with give properties.
+
+        Args:
+            text: Text that will be displayed at the center of the button.
+            x: position the image center on the x coordinate.
+            y: position the image center on the y coordinate.
+            width: width of the button.
+            height: height of the button.
+            font: font of the displayed text.
+            text_color: color of the displayed text.
+            color: default color of the button.
+            shadow_color: color of the buttons shadow.
+            inactive_color: color of the button when button is in inactive state.
+            current_color: color of the button if it's selected with arrow keys (when used in Navigation)
+            active_and_current_color: color of the button if button is active and selected with the arrow keys.
+            active: state of the button upon initialization.
+            on_hover: whether to display pop effect upon mouse hover.
+        """
         self.x = x
         self.y = y
         self.width = width
@@ -101,6 +132,7 @@ class Button:
             self.hover_pop = 0
 
     def get_color(self) -> tuple[int, int, int]:
+        """Get color depending on the state of the button."""
         if self.active and self.current:
             return self.active_and_current_color
         elif self.current:
@@ -111,6 +143,7 @@ class Button:
             return self.inactive_color
 
     def check_clicked(self) -> bool:
+        """Check and set flags if button was pressed using mouse."""
         pos = pygame.mouse.get_pos()
         left_click = pygame.mouse.get_pressed()[0]
         if self.button.collidepoint(pos) and left_click and not self.clicked:
@@ -121,6 +154,7 @@ class Button:
         return False
 
     def check_pressed(self, event: pygame.event.EventType):
+        """Check and set flags if button was pressed using keyboard."""
         if not self.current:
             return
         if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
@@ -133,6 +167,15 @@ class Button:
         return False
 
     def set_action(self, event: pygame.event.EventType) -> bool:
+        """Checks whether button was pressed and if action is possible.
+
+        Args:
+            event: captured event in pygame event loop.
+
+        Returns:
+            self.action: if button was clicked/pressed.
+        """
+
         if self.is_lock:
             return False
         if self.check_pressed(event) or self.check_clicked():
@@ -142,21 +185,26 @@ class Button:
         return self.action
 
     def check_down(self) -> bool:
+        """Check if either flag representing usage of the button is True."""
         return self.clicked or self.pressed
 
     def lock(self):
+        """Set button to locked state."""
         self.is_lock = True
 
     def unlock(self):
+        """Set button to unlocked state."""
         self.is_lock = False
 
     def is_popup(self) -> bool:
+        """Check if button is suppossed to popup."""
         pos = pygame.mouse.get_pos()
         if self.button.collidepoint(pos) or self.current:
             return True
         return False
 
     def set_size(self):
+        """Manage graphical effects of popup or button being pressed."""
         if self.is_lock:
             return
         self.button = pygame.Rect(0, 0, self.width, self.height)
@@ -170,6 +218,12 @@ class Button:
             self.button.center = (self.x, self.y - self.hover_pop)
 
     def draw(self, screen: pygame.SurfaceType):
+        """Display button layer by layer.
+
+        1. Shadow
+        2. Button
+        3. Text
+        """
         pygame.draw.rect(
             screen,
             self.shadow_color,
@@ -194,6 +248,13 @@ class Button:
 
 
 class ButtonLayout:
+    """Create multiple buttons and handle interactions their interactions.
+
+    Easily manage their position by providing the x,y of the layout
+    and wanted distances between buttons.
+    Manage interactions using only one call.
+    """
+
     def __init__(
         self,
         texts: list[str],
@@ -207,6 +268,21 @@ class ButtonLayout:
         orientation: Orientation = Orientation.VERTICAL,
         inactive_color: tuple[int, int, int] = settings.Color.GRAY.value,
     ):
+        """
+        Initalize buttons based on provided properties.
+
+        Args:
+            texts: Texts used to create buttons in provided order.
+            active_ids: Which buttons should be active upon initialization.
+            distance: distance between centers of the buttons.
+            x: x coordinate of the (upperleft corner)/(center) of the layout.
+            y: y coordinate of the (upperleft corner)/(center) of the layout.
+            height: height of the single button.
+            width: width of the single button.
+            center: whether x,y coordinates will be upperleft corner or center of layout.
+            orientation: whether to create layout vertically or horizontally.
+            inactive_color: color of the buttons in inactive state.
+        """
         self.num_buttons = len(texts)
         self.buttons = {}
         self.start_x = x
@@ -237,25 +313,32 @@ class ButtonLayout:
                 self.start_y += distance
 
     def __getitem__(self, button: Optional[str | int]) -> Button:
+        """Access each button using bracket notation.
+
+        Use either button index or the text that it stores.
+        """
         if isinstance(button, str):
             return self.buttons[button]
         elif isinstance(button, int):
             return list(self.buttons.values())[button]
         else:
             raise TypeError(
-                f"Expected checkbox to be a str or int, got {type(button).__name__} instead."
+                f"Expected value to be a str or int, got {type(button).__name__} instead."
             )
 
     def display(self, screen: pygame.SurfaceType):
+        """Draw every button on screen."""
         for button in self.buttons.values():
             button.draw(screen)
 
     def get_active(self) -> Optional[Button]:
+        """Return all buttons in active state."""
         for button in self.buttons.values():
             if button.active:
                 return button
 
     def update(self, event: pygame.event.EventType) -> bool:
+        """Check whether any button was pressed and set all buttons flags approprietly."""
         for button in self.buttons.values():
             if button.set_action(event):
                 return True
@@ -295,6 +378,8 @@ class Navigation:
 
 
 class CheckBoxLayout:
+    """Create layout of buttons that behaves like checkboxes."""
+
     def __init__(
         self,
         texts: list[str],
@@ -309,6 +394,22 @@ class CheckBoxLayout:
         inactive_color: tuple[int, int, int] = settings.Color.GRAY.value,
         multiple_choice: bool = False,
     ) -> None:
+        """
+        Initalize checkboxes based on provided properties.
+
+        Args:
+            texts: Texts used to create checkboxes in provided order.
+            active_ids: Which checkboxes should be active upon initialization.
+            distance: distance between centers of the checkboxes.
+            x: x coordinate of the (upperleft corner)/(center) of the layout.
+            y: y coordinate of the (upperleft corner)/(center) of the layout.
+            height: height of the single checkbox.
+            width: width of the single checkbox.
+            center: whether x,y coordinates will be upperleft corner or center of layout.
+            orientation: whether to create layout vertically or horizontally.
+            inactive_color: color of the checkbox in inactive state.
+            multiple_choice: whether multiple checkboxes are allowed to be active at once.
+        """
         self.distance = distance
         self.height = height
         self.width = width
@@ -345,16 +446,21 @@ class CheckBoxLayout:
                 next_y += distance
 
     def __getitem__(self, checkbox: Optional[str | int]) -> Button:
+        """Access each checkbox using bracket notation.
+
+        Use either checkboxindex or the text that it stores.
+        """
         if isinstance(checkbox, str):
             return self.checkboxes[checkbox]
         elif isinstance(checkbox, int):
             return list(self.checkboxes.values())[checkbox]
         else:
             raise TypeError(
-                f"Expected checkbox to be a str or int, got {type(checkbox).__name__} instead."
+                f"Expected value to be a str or int, got {type(checkbox).__name__} instead."
             )
 
     def get_active_checkboxes(self) -> list[Button]:
+        """Return all checkboxes that are in active state."""
         active_checkboxes = []
         for checkbox in self.checkboxes.values():
             if checkbox.active:
@@ -362,14 +468,21 @@ class CheckBoxLayout:
         return active_checkboxes
 
     def display(self, screen: pygame.SurfaceType):
+        """Draw all the checkboxes on the screen."""
         for button in self.checkboxes.values():
             button.draw(screen)
 
     def deactivate_all_checkboxes(self):
+        """Set all checkboxes to inactive state."""
         for checkbox in self.checkboxes.values():
             checkbox.active = False
 
     def update(self, event: pygame.event.EventType) -> bool:
+        """Handle checkbox behavior, set checkboxes flags and return True if any checkbox was pressed.
+
+        Default behavior sets only the clicked checkbox to be active, disabling others.
+        If multiple option is set updates clicked checkbox independently of the others.
+        """
         for _, checkbox in enumerate(self.checkboxes.values()):
             if checkbox.set_action(event):
                 if self.multiple_choice:
@@ -381,11 +494,13 @@ class CheckBoxLayout:
         return False
 
     def lock(self):
+        """Sets all checkboxes to locked state."""
         self.is_lock = True
         for checkbox in self.checkboxes.values():
             checkbox.lock()
 
     def unlock(self):
+        """Sets all checkboxes to unlocked state."""
         self.is_lock = False
         for checkbox in self.checkboxes.values():
             checkbox.unlock()
@@ -473,6 +588,17 @@ def draw_text(
     text_color: tuple[int, int, int] = settings.Color.BLACK.value,
     font: pygame.font.FontType = settings.main_font_small,
 ):
+    """Draw text on the screen in wanted place.
+
+    Args:
+        text: Text to display.
+        screen: surface that the text will be displayed on.
+        x: x coordinate of the text on the surface.
+        y: y coordinate of the text on the surface.
+        center: whether to use x, y as the center coordinates (default: upperleft corner)
+        text_color: color of the text.
+        font: font used to display text.
+    """
     text_obj = font.render(str(text), True, text_color)
     text_rect = text_obj.get_rect(topleft=(x, y))
     if center:
@@ -481,6 +607,7 @@ def draw_text(
 
 
 def construct_folder_name(folder_data: dict[str, str]) -> str:
+    """Construct folder name by extracting relevant data from provided dict."""
     pos_encoding = folder_data["pos_encoding"]
     view_dirs = folder_data["view_dirs"]
     n_samples = folder_data["n_samples"]
@@ -491,6 +618,7 @@ def construct_folder_name(folder_data: dict[str, str]) -> str:
 
 
 def load_images(folder_path: str) -> list[Image]:
+    """Load all images from given folder into list."""
     images = []
     for image_name in sorted(os.listdir(folder_path)):
         image_path = os.path.join(folder_path, image_name)
@@ -506,6 +634,7 @@ def load_images(folder_path: str) -> list[Image]:
 
 
 def load_all_folders(dataset_dir: str) -> dict[str, list[Image]]:
+    """Create mapping dict {folder_path: images in that folder}."""
     folders = {}
     for folder_name in sorted(os.listdir(dataset_dir)):
         folder_path = os.path.join(dataset_dir, folder_name, "video_200000")
@@ -520,6 +649,7 @@ class Indexing(Enum):
 
 
 def set_idx(image_idx: int, max_idx: int, direction: Indexing):
+    """Set next index, loop in either side if size is exceeded."""
     if direction == Indexing.NEXT:
         return next_idx(image_idx, max_idx)
     elif direction == Indexing.PREVIOUS:
