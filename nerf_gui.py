@@ -315,6 +315,10 @@ def mednerf():
 
             # update data that possibly changed
             folder_data["n_samples"] = active_samples_checkbox.text
+
+            # access individual checkboxes or buttons using bracket notation
+            # either the checkbox text or its index in the list
+            # can be used to retrieve it from the layout
             folder_data["pos_encoding"] = ablation_checkboxes["Pos encoding"].active
             folder_data["view_dirs"] = ablation_checkboxes["View direction"].active
             folder_name = construct_folder_name_mednerf(folder_data)
