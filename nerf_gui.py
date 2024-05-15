@@ -82,6 +82,25 @@ def initialize_layouts():
     return n_samples, ablation, locks, arrows, play_button
 
 
+def handle_play_flag(play_button, play, event):
+    if play_button.set_action(event):
+        play = not play
+        play_button.text = "Stop" if play else "Play"
+    return play
+
+
+def handle_arrows(arrows_buttons, play, play_button, event):
+    index_direction = None
+    if arrows_buttons.update(event):
+        play = False
+        play_button.text = "Play"
+        if arrows_buttons["<"].action:
+            index_direction = Indexing.PREVIOUS
+        elif arrows_buttons[">"].action:
+            index_direction = Indexing.NEXT
+    return play, index_direction
+
+
 def lego():
     samples_checkboxes, ablation_checkboxes, locks, arrows_buttons, play_button = (
         initialize_layouts()
@@ -110,17 +129,11 @@ def lego():
             if samples_checkboxes.update(event) or ablation_checkboxes.update(event):
                 update_folder = True
 
-            if arrows_buttons.update(event):
-                play = False
-                play_button.text = "Play"
-                if arrows_buttons["<"].action:
-                    index_direction = Indexing.PREVIOUS
-                elif arrows_buttons[">"].action:
-                    index_direction = Indexing.NEXT
+            play, index_direction = handle_arrows(
+                arrows_buttons, play, play_button, event
+            )
 
-            if play_button.set_action(event):
-                play = not play
-                play_button.text = "Stop" if play else "Play"
+            play = handle_play_flag(play_button, play, event)
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
