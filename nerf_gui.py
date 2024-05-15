@@ -100,6 +100,7 @@ def lego():
     max_idx = len(images) - 1
     run = True
     play = False
+    play_speed = 0.07
     while run:
         update_folder = False
         for event in pygame.event.get():
@@ -159,7 +160,7 @@ def lego():
             for lock in locks:
                 lock.draw(screen)
         if play:
-            time.sleep(0.07)
+            time.sleep(play_speed)
             image_idx = set_idx(image_idx, max_idx, Indexing.NEXT)
         pygame.display.update()
 
