@@ -18,7 +18,7 @@ class Image:
         x: int = 0,
         y: int = 0,
         scale: float = 1,
-        border_size: int = 2,
+        border_size: int = 0,
     ) -> None:
         self.x = x
         self.y = y
