@@ -251,6 +251,8 @@ def mednerf():
         "n_samples": samples_checkboxes.get_active_checkboxes()[0].text,
     }
 
+    # load all images beforehand
+    # to allow for smooth changes during "rendering"
     folders = load_all_folders_mednerf("sampling_dataset")
     folder_name = construct_folder_name_mednerf(folder_data)
     images = folders[folder_name]
@@ -261,19 +263,28 @@ def mednerf():
     play_speed = 0.07
     while run:
         update_folder = False
+        # for loop iterating over every event that pygame catches
+        # if user does not do any action (no mouse movement, no keyboard action) this is skipped
         for event in pygame.event.get():
             folder_name = None
             index_direction = None
 
+            # .update() function in layouts returns True
+            # only if any of the checkbox or button was activated
+            # if that happened we know something changed, and can act on it later
             if samples_checkboxes.update(event) or ablation_checkboxes.update(event):
                 update_folder = True
 
+            # play and play_button is passed
+            # because clicking any of the arrow
+            # stops the animation
             play, index_direction = handle_arrows(
                 arrows_buttons, play, play_button, event
             )
 
             play = handle_play_flag(play_button, play, event)
 
+            # here every keyboard event is catched
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     run = False
@@ -287,7 +298,12 @@ def mednerf():
             if index_direction is not None:
                 image_idx = set_idx(image_idx, max_idx, index_direction)
 
+        # act upon change registered earlier
         if update_folder:
+            ### CUSTOM LOCKING
+            # lock position encoding and viewing direction
+            # for any other number of samples than 128
+            # because it's the only n_samples that these ablations were done for
             active_samples_checkbox = samples_checkboxes.get_active_checkboxes()[0]
             if active_samples_checkbox.text == "128":
                 ablation_checkboxes.unlock()
@@ -295,7 +311,9 @@ def mednerf():
                 ablation_checkboxes["Pos encoding"].active = True
                 ablation_checkboxes["View direction"].active = True
                 ablation_checkboxes.lock()
+            ### END OF CUSTOM LOCKING
 
+            # update data that possibly changed
             folder_data["n_samples"] = active_samples_checkbox.text
             folder_data["pos_encoding"] = ablation_checkboxes["Pos encoding"].active
             folder_data["view_dirs"] = ablation_checkboxes["View direction"].active
@@ -308,6 +326,8 @@ def mednerf():
         arrows_buttons.display(screen)
         samples_checkboxes.display(screen)
         ablation_checkboxes.display(screen)
+
+        # display locks to inform user that these options are locked
         if ablation_checkboxes.is_lock:
             for lock in locks:
                 lock.draw(screen)
