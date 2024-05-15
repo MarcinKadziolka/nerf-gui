@@ -253,6 +253,13 @@ def mednerf():
 
     # load all images beforehand
     # to allow for smooth changes during "rendering"
+
+    # warning: load_folder function calls load_images
+    # which scales images by 1.5 with hardcoded value
+    # also the position of the image is fixed
+    # pygame also has function scale() that scales
+    # to precise number (500, 500), instead of by the factor
+    # maybe it can be used to match lego and mednerf sizes
     folders = load_all_folders_mednerf("sampling_dataset")
     folder_name = construct_folder_name_mednerf(folder_data)
     images = folders[folder_name]
