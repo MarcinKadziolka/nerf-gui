@@ -12,7 +12,9 @@ from helpers import (
     Orientation,
     Indexing,
     load_all_folders,
+    load_all_folders_mednerf,
     construct_folder_name,
+    construct_folder_name_mednerf,
     set_idx,
 )
 
@@ -249,8 +251,8 @@ def mednerf():
         "n_samples": samples_checkboxes.get_active_checkboxes()[0].text,
     }
 
-    folders = load_all_folders("sampling_dataset")
-    folder_name = construct_folder_name(folder_data)
+    folders = load_all_folders_mednerf("sampling_dataset")
+    folder_name = construct_folder_name_mednerf(folder_data)
     images = folders[folder_name]
     image_idx = 0
     max_idx = len(images) - 1
@@ -297,7 +299,7 @@ def mednerf():
             folder_data["n_samples"] = active_samples_checkbox.text
             folder_data["pos_encoding"] = ablation_checkboxes["Pos encoding"].active
             folder_data["view_dirs"] = ablation_checkboxes["View direction"].active
-            folder_name = construct_folder_name(folder_data)
+            folder_name = construct_folder_name_mednerf(folder_data)
             images = folders[folder_name]
 
         screen.fill(settings.Color.BACKGROUND.value)

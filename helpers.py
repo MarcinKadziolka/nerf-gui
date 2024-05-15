@@ -617,6 +617,17 @@ def construct_folder_name(folder_data: dict[str, str]) -> str:
     return folder_name
 
 
+def construct_folder_name_mednerf(folder_data: dict[str, str]) -> str:
+    """Construct folder name by extracting relevant data from provided dict."""
+    pos_encoding = folder_data["pos_encoding"]
+    view_dirs = folder_data["view_dirs"]
+    n_samples = folder_data["n_samples"]
+    folder_name = (
+        f"lego_pos_encoding_{pos_encoding}_view_dirs_{view_dirs}_64_{n_samples}"
+    )
+    return folder_name
+
+
 def load_images(folder_path: str) -> list[Image]:
     """Load all images from given folder into list."""
     images = []
@@ -634,6 +645,16 @@ def load_images(folder_path: str) -> list[Image]:
 
 
 def load_all_folders(dataset_dir: str) -> dict[str, list[Image]]:
+    """Create mapping dict {folder_path: images in that folder}."""
+    folders = {}
+    for folder_name in sorted(os.listdir(dataset_dir)):
+        folder_path = os.path.join(dataset_dir, folder_name, "video_200000")
+        images = load_images(folder_path=folder_path)
+        folders[folder_name] = images
+    return folders
+
+
+def load_all_folders_mednerf(dataset_dir: str) -> dict[str, list[Image]]:
     """Create mapping dict {folder_path: images in that folder}."""
     folders = {}
     for folder_name in sorted(os.listdir(dataset_dir)):
