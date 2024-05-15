@@ -248,7 +248,7 @@ class Button:
 
 
 class ButtonLayout:
-    """Create multiple buttons and handle interactions their interactions.
+    """Create multiple buttons and handle their interactions.
 
     Easily manage their position by providing the x,y of the layout
     and wanted distances between buttons.
