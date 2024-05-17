@@ -24,6 +24,17 @@ screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 pygame.display.set_caption("Nerf gui")
 
 
+project_checkboxes = CheckBoxLayout(
+    ["Lego", "Mednerf"],
+    active_ids=[0],
+    width=350,
+    distance=settings.VERTICAL_DISTANCE,
+    x=settings.SCREEN_SIZE.right_third,
+    y=100,
+    orientation=Orientation.VERTICAL,
+)
+
+
 def initialize_layouts():
     checkboxes_x = settings.SCREEN_SIZE.right_third
     checkboxes_y = 600
@@ -32,7 +43,7 @@ def initialize_layouts():
         ["16", "32", "64", "128"],
         active_ids=[3],
         width=small_button_width,
-        distance=settings.DISTANCE + 10,
+        distance=settings.HORIZONTAL_DISTANCE + 10,
         x=checkboxes_x,
         y=checkboxes_y,
         orientation=Orientation.HORIZONTAL,
@@ -41,7 +52,7 @@ def initialize_layouts():
         ["Pos encoding", "View direction"],
         active_ids=[0, 1],
         width=350,
-        distance=settings.DISTANCE,
+        distance=settings.VERTICAL_DISTANCE,
         x=checkboxes_x,
         y=400,
         orientation=Orientation.VERTICAL,
@@ -64,12 +75,14 @@ def initialize_layouts():
         scale=locks_scale,
     )
     locks = [lock1, lock2]
-    media_buttons_y = int(settings.SCREEN_SIZE.mid_y - 50 + 600 / 2 + settings.DISTANCE)
+    media_buttons_y = int(
+        settings.SCREEN_SIZE.mid_y - 50 + 600 / 2 + settings.HORIZONTAL_DISTANCE
+    )
     arrows = ButtonLayout(
         ["<", ">"],
         active_ids=[0, 1],
         width=small_button_width,
-        distance=settings.DISTANCE,
+        distance=settings.HORIZONTAL_DISTANCE,
         orientation=Orientation.HORIZONTAL,
         x=int(settings.SCREEN_SIZE.x * 2 / 6),
         y=media_buttons_y,
@@ -92,7 +105,7 @@ def initialize_layouts_mednerf():
         ["16", "32", "64", "128"],
         active_ids=[3],
         width=small_button_width,
-        distance=settings.DISTANCE + 10,
+        distance=settings.HORIZONTAL_DISTANCE + 10,
         x=checkboxes_x,
         y=checkboxes_y,
         orientation=Orientation.HORIZONTAL,
@@ -101,7 +114,7 @@ def initialize_layouts_mednerf():
         ["Pos encoding", "View direction"],
         active_ids=[0, 1],
         width=350,
-        distance=settings.DISTANCE,
+        distance=settings.VERTICAL_DISTANCE,
         x=checkboxes_x,
         y=400,
         orientation=Orientation.VERTICAL,
@@ -124,12 +137,14 @@ def initialize_layouts_mednerf():
         scale=locks_scale,
     )
     locks = [lock1, lock2]
-    media_buttons_y = int(settings.SCREEN_SIZE.mid_y - 50 + 600 / 2 + settings.DISTANCE)
+    media_buttons_y = int(
+        settings.SCREEN_SIZE.mid_y - 50 + 600 / 2 + settings.HORIZONTAL_DISTANCE
+    )
     arrows = ButtonLayout(
         ["<", ">"],
         active_ids=[0, 1],
         width=small_button_width,
-        distance=settings.DISTANCE,
+        distance=settings.HORIZONTAL_DISTANCE,
         orientation=Orientation.HORIZONTAL,
         x=int(settings.SCREEN_SIZE.x * 2 / 6),
         y=media_buttons_y,
@@ -164,9 +179,13 @@ def handle_arrows(arrows_buttons, play, play_button, event):
 
 
 def lego():
-    samples_checkboxes, ablation_checkboxes, locks, arrows_buttons, play_button = (
-        initialize_layouts()
-    )
+    (
+        samples_checkboxes,
+        ablation_checkboxes,
+        locks,
+        arrows_buttons,
+        play_button,
+    ) = initialize_layouts()
     folder_data = {
         "dataset_dir": "sampling_dataset",
         "pos_encoding": ablation_checkboxes["Pos encoding"].active,
@@ -190,7 +209,9 @@ def lego():
 
             if samples_checkboxes.update(event) or ablation_checkboxes.update(event):
                 update_folder = True
-
+            if project_checkboxes.update(event):
+                if project_checkboxes["Mednerf"].active:
+                    mednerf()
             play, index_direction = handle_arrows(
                 arrows_buttons, play, play_button, event
             )
@@ -230,6 +251,7 @@ def lego():
         play_button.draw(screen)
         arrows_buttons.display(screen)
         samples_checkboxes.display(screen)
+        project_checkboxes.display(screen)
         ablation_checkboxes.display(screen)
         if ablation_checkboxes.is_lock:
             for lock in locks:
@@ -282,6 +304,9 @@ def mednerf():
             if samples_checkboxes.update(event) or ablation_checkboxes.update(event):
                 update_folder = True
 
+            if project_checkboxes.update(event):
+                if project_checkboxes["Lego"].active:
+                    return
             # play and play_button is passed
             # because clicking any of the arrow
             # stops the animation
@@ -337,6 +362,7 @@ def mednerf():
         arrows_buttons.display(screen)
         samples_checkboxes.display(screen)
         ablation_checkboxes.display(screen)
+        project_checkboxes.display(screen)
 
         # display locks to inform user that these options are locked
         if ablation_checkboxes.is_lock:
@@ -349,4 +375,4 @@ def mednerf():
 
 
 if __name__ == "__main__":
-    mednerf()
+    lego()
