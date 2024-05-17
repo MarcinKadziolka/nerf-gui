@@ -683,3 +683,22 @@ def next_idx(image_idx: int, max_idx: int):
 
 def previous_idx(image_idx: int, max_idx: int):
     return max_idx if image_idx == 0 else image_idx - 1
+
+
+def handle_play_flag(play_button, play, event):
+    if play_button.set_action(event):
+        play = not play
+        play_button.text = "Stop" if play else "Play"
+    return play
+
+
+def handle_arrows(arrows_buttons, play, play_button, event):
+    index_direction = None
+    if arrows_buttons.update(event):
+        play = False
+        play_button.text = "Play"
+        if arrows_buttons["<"].action:
+            index_direction = Indexing.PREVIOUS
+        elif arrows_buttons[">"].action:
+            index_direction = Indexing.NEXT
+    return play, index_direction
