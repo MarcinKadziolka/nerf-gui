@@ -34,7 +34,8 @@ class ScreenSize:
 infoObject = pygame.display.Info()
 SCREEN_SIZE = ScreenSize(infoObject.current_w, infoObject.current_h)
 
-DISTANCE = 80
+HORIZONTAL_DISTANCE = 80
+VERTICAL_DISTANCE = 65
 SLEEP_DURATION = 0.1
 
 main_font = pygame.font.SysFont("rasa", 80)
