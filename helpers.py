@@ -19,7 +19,8 @@ class Image:
         image_path: str,
         x: int = 0,
         y: int = 0,
-        scale: float = 1,
+        width: Optional[int] = None,
+        height: Optional[int] = None,
         border_size: int = 0,
     ) -> None:
         """Load an image from given path.
@@ -34,10 +35,11 @@ class Image:
         self.x = x
         self.y = y
         self.border_size = border_size
-        self.image = pygame.transform.scale_by(pygame.image.load(image_path), scale)
+        self.image = pygame.image.load(image_path)
+        self.width = width if width is not None else self.image.get_width()
+        self.height = height if height is not None else self.image.get_height()
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
         self.rect = self.image.get_rect(center=(self.x, self.y))
-        self.width = self.image.get_width()
-        self.height = self.image.get_height()
 
     def draw(self, screen: pygame.SurfaceType):
         screen.blit(self.image, self.rect)
@@ -623,9 +625,7 @@ def construct_folder_name_mednerf(folder_data: dict[str, str]) -> str:
     model = folder_data["model"]
     aug = folder_data["aug"]
     fmaps = folder_data["fmaps"]
-    folder_name = (
-        f"{dataset_name}_{model}"
-    )
+    folder_name = f"{dataset_name}_{model}"
     return folder_name
 
 
@@ -637,9 +637,10 @@ def load_images(folder_path: str) -> list[Image]:
         images.append(
             Image(
                 image_path=image_path,
-                scale=1.5,
                 x=int(settings.SCREEN_SIZE.x * 2 / 6),
                 y=settings.SCREEN_SIZE.mid_y - 50,
+                width=600,
+                height=600,
             )
         )
     return images

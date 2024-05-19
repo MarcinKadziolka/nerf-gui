@@ -15,11 +15,11 @@ from helpers import (
     handle_play_flag,
 )
 
-model_dict={
+model_dict = {
     "Mednerf": "mednerf",
     "HyperNeRFGAN": "nerfgan",
     "HNGAN + aug": "nerfgan_aug",
-    "HNGAN + aug + disc": "nerfgan_aug_gen"
+    "HNGAN + aug + disc": "nerfgan_aug_gen",
 }
 
 
@@ -28,7 +28,7 @@ def initialize_layouts_mednerf():
     checkboxes_y = 800
     small_button_width = 70
     n_samples = CheckBoxLayout(
-        ["Mednerf", "HyperNeRFGAN", "HNGAN + aug","HNGAN + aug + disc"],
+        ["Mednerf", "HyperNeRFGAN", "HNGAN + aug", "HNGAN + aug + disc"],
         active_ids=[0],
         width=350,
         distance=settings.HORIZONTAL_DISTANCE + 10,
@@ -47,20 +47,17 @@ def initialize_layouts_mednerf():
         multiple_choice=False,
     )
     locks_x = int(ablation.x - ablation.width / 2 + 20)
-    locks_scale = 1
     lock1 = Image(
         "lock.png",
         x=locks_x,
         border_size=0,
         y=ablation.y - 3,
-        scale=locks_scale,
     )
     lock2 = Image(
         "lock.png",
         x=locks_x,
         border_size=0,
         y=ablation.y + ablation.distance - 3,
-        scale=locks_scale,
     )
     locks = [lock1, lock2]
     media_buttons_y = int(
@@ -91,9 +88,9 @@ samples_checkboxes, ablation_checkboxes, locks, arrows_buttons, play_button = (
 folder_data = {
     "dataset_dir": "mednerf_dataset",
     "dataset_name": "chest" if ablation_checkboxes["Chest"].active else "knee",
-    "model": 'mednerf', ###samples_checkboxes.get_active_checkboxes()[0].text,
-    "aug":True,
-    "fmaps":True
+    "model": "mednerf",  ###samples_checkboxes.get_active_checkboxes()[0].text,
+    "aug": True,
+    "fmaps": True,
 }
 
 # load all images beforehand
@@ -167,7 +164,7 @@ def mednerf_run(project_checkboxes, screen):
             # for any other number of samples than 128
             # because it's the only n_samples that these ablations were done for
             active_samples_checkbox = samples_checkboxes.get_active_checkboxes()[0]
-            #TODO LATER
+            # TODO LATER
             # if active_samples_checkbox.text == "128":
             #     ablation_checkboxes.unlock()
             # else:
@@ -183,7 +180,9 @@ def mednerf_run(project_checkboxes, screen):
             # either the checkbox text or its index in the list
             # can be used to retrieve it from the layout
             # TODO LATER
-            folder_data["dataset_name"] = "chest" if ablation_checkboxes["Chest"].active else "knee"
+            folder_data["dataset_name"] = (
+                "chest" if ablation_checkboxes["Chest"].active else "knee"
+            )
             # folder_data["dataset_name"] = ablation_checkboxes["View direction"].active
             folder_name = construct_folder_name_mednerf(folder_data)
             images = folders[folder_name]
