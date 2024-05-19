@@ -15,29 +15,36 @@ from helpers import (
     handle_play_flag,
 )
 
+model_dict={
+    "Mednerf": "mednerf",
+    "HyperNeRFGAN": "nerfgan",
+    "HNGAN + aug": "nerfgan_aug",
+    "HNGAN + aug + disc": "nerfgan_aug_gen"
+}
+
 
 def initialize_layouts_mednerf():
     checkboxes_x = settings.SCREEN_SIZE.right_third
-    checkboxes_y = 600
+    checkboxes_y = 800
     small_button_width = 70
     n_samples = CheckBoxLayout(
-        ["16", "32", "64", "128"],
-        active_ids=[3],
-        width=small_button_width,
+        ["Mednerf", "HyperNeRFGAN", "HNGAN + aug","HNGAN + aug + disc"],
+        active_ids=[0],
+        width=350,
         distance=settings.HORIZONTAL_DISTANCE + 10,
         x=checkboxes_x,
         y=checkboxes_y,
-        orientation=Orientation.HORIZONTAL,
+        orientation=Orientation.VERTICAL,
     )
     ablation = CheckBoxLayout(
-        ["Pos encoding", "View direction"],
-        active_ids=[0, 1],
+        ["Chest", "Knee"],
+        active_ids=[0],
         width=350,
-        distance=settings.VERTICAL_DISTANCE,
+        distance=settings.HORIZONTAL_DISTANCE + 10,
         x=checkboxes_x,
         y=400,
         orientation=Orientation.VERTICAL,
-        multiple_choice=True,
+        multiple_choice=False,
     )
     locks_x = int(ablation.x - ablation.width / 2 + 20)
     locks_scale = 1
@@ -57,7 +64,7 @@ def initialize_layouts_mednerf():
     )
     locks = [lock1, lock2]
     media_buttons_y = int(
-        settings.SCREEN_SIZE.mid_y - 50 + 600 / 2 + settings.HORIZONTAL_DISTANCE
+        settings.SCREEN_SIZE.mid_y - 50 + 800 / 2 + settings.HORIZONTAL_DISTANCE
     )
     arrows = ButtonLayout(
         ["<", ">"],
@@ -82,10 +89,11 @@ samples_checkboxes, ablation_checkboxes, locks, arrows_buttons, play_button = (
     initialize_layouts_mednerf()
 )
 folder_data = {
-    "dataset_dir": "sampling_dataset",
-    "pos_encoding": ablation_checkboxes["Pos encoding"].active,
-    "view_dirs": ablation_checkboxes["View direction"].active,
-    "n_samples": samples_checkboxes.get_active_checkboxes()[0].text,
+    "dataset_dir": "mednerf_dataset",
+    "dataset_name": "chest" if ablation_checkboxes["Chest"].active else "knee",
+    "model": 'mednerf', ###samples_checkboxes.get_active_checkboxes()[0].text,
+    "aug":True,
+    "fmaps":True
 }
 
 # load all images beforehand
@@ -97,7 +105,7 @@ folder_data = {
 # pygame also has function scale() that scales
 # to precise number (500, 500), instead of by the factor
 # maybe it can be used to match lego and mednerf sizes
-folders = load_all_folders_mednerf("sampling_dataset")
+folders = load_all_folders_mednerf("mednerf_dataset")
 folder_name = construct_folder_name_mednerf(folder_data)
 images = folders[folder_name]
 image_idx = 0
@@ -159,22 +167,24 @@ def mednerf_run(project_checkboxes, screen):
             # for any other number of samples than 128
             # because it's the only n_samples that these ablations were done for
             active_samples_checkbox = samples_checkboxes.get_active_checkboxes()[0]
-            if active_samples_checkbox.text == "128":
-                ablation_checkboxes.unlock()
-            else:
-                ablation_checkboxes["Pos encoding"].active = True
-                ablation_checkboxes["View direction"].active = True
-                ablation_checkboxes.lock()
+            #TODO LATER
+            # if active_samples_checkbox.text == "128":
+            #     ablation_checkboxes.unlock()
+            # else:
+            #     ablation_checkboxes["Pos encoding"].active = True
+            #     ablation_checkboxes["View direction"].active = True
+            #     ablation_checkboxes.lock()
             ### END OF CUSTOM LOCKING
 
             # update data that possibly changed
-            folder_data["n_samples"] = active_samples_checkbox.text
+            folder_data["model"] = model_dict.get(active_samples_checkbox.text)
 
             # access individual checkboxes or buttons using bracket notation
             # either the checkbox text or its index in the list
             # can be used to retrieve it from the layout
-            folder_data["pos_encoding"] = ablation_checkboxes["Pos encoding"].active
-            folder_data["view_dirs"] = ablation_checkboxes["View direction"].active
+            # TODO LATER
+            folder_data["dataset_name"] = "chest" if ablation_checkboxes["Chest"].active else "knee"
+            # folder_data["dataset_name"] = ablation_checkboxes["View direction"].active
             folder_name = construct_folder_name_mednerf(folder_data)
             images = folders[folder_name]
 

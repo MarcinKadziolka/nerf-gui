@@ -619,11 +619,12 @@ def construct_folder_name(folder_data: dict[str, str]) -> str:
 
 def construct_folder_name_mednerf(folder_data: dict[str, str]) -> str:
     """Construct folder name by extracting relevant data from provided dict."""
-    pos_encoding = folder_data["pos_encoding"]
-    view_dirs = folder_data["view_dirs"]
-    n_samples = folder_data["n_samples"]
+    dataset_name = folder_data["dataset_name"]
+    model = folder_data["model"]
+    aug = folder_data["aug"]
+    fmaps = folder_data["fmaps"]
     folder_name = (
-        f"lego_pos_encoding_{pos_encoding}_view_dirs_{view_dirs}_64_{n_samples}"
+        f"{dataset_name}_{model}"
     )
     return folder_name
 
