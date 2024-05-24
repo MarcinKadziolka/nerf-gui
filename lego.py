@@ -21,6 +21,15 @@ def initialize_layouts():
     checkboxes_x = settings.SCREEN_SIZE.right_third
     checkboxes_y = 600
     small_button_width = 70
+    coarse_n_samples = CheckBoxLayout(
+        ["0", "64"],
+        active_ids=[1],
+        width=small_button_width,
+        distance=settings.HORIZONTAL_DISTANCE + 10,
+        x=checkboxes_x,
+        y=checkboxes_y - 70,
+        orientation=Orientation.HORIZONTAL,
+    )
     n_samples = CheckBoxLayout(
         ["16", "32", "64", "128"],
         active_ids=[3],
@@ -73,11 +82,12 @@ def initialize_layouts():
         width=200,
         active=True,
     )
-    return n_samples, ablation, locks, arrows, play_button
+    return coarse_n_samples, n_samples, ablation, locks, arrows, play_button
 
 
 # initialize lego
 (
+    coarse_samples_checkboxes,
     samples_checkboxes,
     ablation_checkboxes,
     locks,
@@ -89,6 +99,7 @@ folder_data = {
     "pos_encoding": ablation_checkboxes["Pos encoding"].active,
     "view_dirs": ablation_checkboxes["View direction"].active,
     "n_samples": samples_checkboxes.get_active_checkboxes()[0].text,
+    "coarse_n_samples": coarse_samples_checkboxes.get_active_checkboxes()[0].text,
 }
 
 folders = load_all_folders("sampling_dataset")
@@ -111,7 +122,11 @@ def lego_run(project_checkboxes, screen):
             folder_name = None
             index_direction = None
 
-            if samples_checkboxes.update(event) or ablation_checkboxes.update(event):
+            if (
+                samples_checkboxes.update(event)
+                or ablation_checkboxes.update(event)
+                or coarse_samples_checkboxes.update(event)
+            ):
                 update_folder = True
             if project_checkboxes.update(event):
                 if project_checkboxes["Mednerf"].active:
@@ -138,13 +153,20 @@ def lego_run(project_checkboxes, screen):
 
         if update_folder:
             active_samples_checkbox = samples_checkboxes.get_active_checkboxes()[0]
-            if active_samples_checkbox.text == "128":
+            active_coarse_samples_checkbox = (
+                coarse_samples_checkboxes.get_active_checkboxes()[0]
+            )
+            if (
+                active_samples_checkbox.text == "128"
+                and active_coarse_samples_checkbox.text == "64"
+            ):
                 ablation_checkboxes.unlock()
             else:
                 ablation_checkboxes["Pos encoding"].active = True
                 ablation_checkboxes["View direction"].active = True
                 ablation_checkboxes.lock()
 
+            folder_data["coarse_n_samples"] = active_coarse_samples_checkbox.text
             folder_data["n_samples"] = active_samples_checkbox.text
             folder_data["pos_encoding"] = ablation_checkboxes["Pos encoding"].active
             folder_data["view_dirs"] = ablation_checkboxes["View direction"].active
@@ -155,6 +177,8 @@ def lego_run(project_checkboxes, screen):
         images[image_idx].draw(screen)
         play_button.draw(screen)
         arrows_buttons.display(screen)
+
+        coarse_samples_checkboxes.display(screen)
         samples_checkboxes.display(screen)
         project_checkboxes.display(screen)
         ablation_checkboxes.display(screen)
