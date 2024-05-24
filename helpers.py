@@ -613,9 +613,8 @@ def construct_folder_name(folder_data: dict[str, str]) -> str:
     pos_encoding = folder_data["pos_encoding"]
     view_dirs = folder_data["view_dirs"]
     n_samples = folder_data["n_samples"]
-    folder_name = (
-        f"lego_pos_encoding_{pos_encoding}_view_dirs_{view_dirs}_64_{n_samples}"
-    )
+    coarse_n_samples = folder_data["coarse_n_samples"]
+    folder_name = f"lego_pos_encoding_{pos_encoding}_view_dirs_{view_dirs}_{coarse_n_samples}_{n_samples}"
     return folder_name
 
 
