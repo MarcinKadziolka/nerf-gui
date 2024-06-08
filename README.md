@@ -4,6 +4,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ## Medical 
 ### Medical vs Synthetic data
 Compared to synthetic data which is usually used to evaluate model performance, medical datasets are based off of CT scans, which sample data only in one axis.
+
 ![Test image!](assets/images/mednerf/Sampling_diff.jpg)
 ![Test image!](assets/images/mednerf/Untitled.jpg) 
 
