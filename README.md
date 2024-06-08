@@ -23,5 +23,10 @@ FΘ to transform the spatial location x = (x, y, z) to emitted color c = (r, g, 
 ![Nerf_sample_changes!](assets/images/mednerf/Untitled.jpg) 
 To evaluate a model for the medical application and ensure comparability with existing methodologies, we use a dataset employed in the MedNeRF containing digitally reconstructed radiographs (DRR) with 20 examples for chest and 5 examples for knee, each consisting of 72 128×128 images taken every 5 degrees, covering full 360-degree vertical rotation per patient. To account
 for differences between synthetic and medical datasets we change the sampling angle to only cover one axis as the MedNeRF authors did, and change the model configuration to not assume a white background for the training data. We train the model on a single example for each experiment.
+
+### Experiments
+
 ### Results
+Compared to other models, HyperNeRFGAN achieves significantly better results, leading to higher quality projections from single view x-ray.
+![results!](assets/images/mednerf/results.jpg) 
 
