@@ -25,8 +25,12 @@ To evaluate a model for the medical application and ensure comparability with ex
 for differences between synthetic and medical datasets we change the sampling angle to only cover one axis as the MedNeRF authors did, and change the model configuration to not assume a white background for the training data. We train the model on a single example for each experiment.
 
 ### Experiments
+We performed ablation study investigating ways to improve model results. We've experimented with implementing stylegan2 augmentations, changed the number of feature maps and implememted nerf viewing directions
+[TABLE]
+[CONCLUSIONS]
 
 ### Results
 Compared to other models, HyperNeRFGAN achieves significantly better results, leading to higher quality projections from single view x-ray.
 ![results!](assets/images/mednerf/results.jpg) 
+[IMAGES AND GIFS]
 
