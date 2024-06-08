@@ -5,7 +5,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ### Use Case
 ### Medical vs Synthetic data
 Compared to synthetic data which is usually used to evaluate model performance, medical datasets are based off of CT scans, which sample data only in one axis.
-
 ![Medical_vs_synthetic_data!](assets/images/mednerf/Sampling_diff.jpg) 
 
 ### MedNeRF
@@ -16,6 +15,7 @@ such as mode collapse can occur. The authors solve that by combining GRAF with D
 ### Hyper NeRFGAN
 HyperNeRFGAN builds from INR GAN model by replacing INR model with NeRF.
 ![nerfgan!](assets/images/mednerf/Nerfgan.jpg)
+
 Generator takes the sample from Gaussian distribution and returns the set of parameters Θ.These parameters are further used inside the NeRF model
 FΘ to transform the spatial location x = (x, y, z) to emitted color c = (r, g, b) and volume density σ. Θ is split into two parts Θ which is generated for each representation and Θs which is share by all of them.
 
