@@ -11,6 +11,7 @@ Compared to synthetic data which is usually used to evaluate model performance, 
 MedNeRF utilizes GRAF based model to produce accurate 3D projections from few or single view x-ray. GRAF uses SIREN to generate
 shape and appearance vectors used to describe predicted NeRF patch for a given view angle. Due to training GAN on medical datasets which, due to their nature are usually quite small, a number of issues,
 such as mode collapse can occur. The authors solve that by combining GRAF with DAG and using multiple discriminator heads.
+![MedNERF!](assets/images/mednerf/MEDNERF.jpg) 
 
 ### Hyper NeRFGAN
 HyperNeRFGAN builds from INR GAN model by replacing INR model with NeRF.
