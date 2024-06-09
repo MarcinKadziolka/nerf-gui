@@ -1,10 +1,21 @@
 # NerfGUI
 
+## What is NeRF?
 NeRF is a machine learning model that allows to render new high quality views after training on few dozens images of the scene.
 
-But how do we do that? After all we only have pictures of the scene, that we need to somehow used to create representation of the object such that we will be able to query model at any location that we can imagine.
+The idea begins with having images of the scene that we want to represent.
 
-This is done in 3 steps:
+<img src="https://github.com/MarcinKadziolka/nerf-gui/assets/30349386/d049acc6-26be-497b-b109-2f1a69664684" width="400">
+
+Then we want to be able to create new previously unseen image of the scene.
+
+<img src="https://github.com/MarcinKadziolka/nerf-gui/assets/30349386/91513a6e-178c-4534-bbfe-fcfab5f23949" width="400">
+
+But how do we do that? After all we only have pictures of the scene, that we need to somehow use to create representation of the object such that we will be able to query model at any location that we can imagine.
+
+<img src="https://github.com/MarcinKadziolka/nerf-gui/assets/30349386/297c3a0d-714f-4172-99c2-f24be27f0c50" width="400">
+
+This is the problem that NeRF solves in 3 steps.
 
 ### 1. March rays and sample points
 
