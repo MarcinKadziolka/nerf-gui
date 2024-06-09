@@ -2,8 +2,6 @@
 
 NeRF is a machine learning model that allows to render new high quality views after training on few dozens images of the scene.
 
-example car gif
-
 But how do we do that? After all we only have pictures of the scene, that we need to somehow used to create representation of the object such that we will be able to query model at any location that we can imagine.
 
 This is done in 3 steps:
@@ -41,11 +39,9 @@ After successful training every possible view can be render at will.
 
 ![](https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYXdjOTRnMnhsdWNwbWJ3Z2UzMG5wcHA5NXMyc2lqNXM4eHBhZWE4YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/O11QQczTPt3rjTLzHW/giphy.gif)
 
-## ## Sampling in NeRF
+## Sampling in NeRF
 
 Let's take a closer look at the way points are sampled in the original NeRF and why one would like to improve it.
-
-
 
 Original sampling process is done in two stages: first, to get the initial information about densities and second, to resample in the areas of the highest density (highest probability that something is there)
 
@@ -53,21 +49,25 @@ Original sampling process is done in two stages: first, to get the initial infor
 
 Firstly, ray is divided into N equal bins along the ray. Then for each bin we sample once with the uniform probability between the ends. Why? We want to make sure that we sample throughout the whole scene, but also let the model explore the space, which fixed sampling would prevent.
 
-
-
 ![](https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGY4b3o4dWFtcjlxOHVwMDNqZjJpNTFxbHJ2OHh3bjUxdm03ejBkaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/m7kilMWnQNq5VsB4V9/giphy.gif)
-
-
 
 ### Second stage: Resampling in dense areas
 
-Secondly, initial samples are sent to NeRF model, which outputs RGB and $\sigma$ for each point. We don't care about the color, but the information about density is very usuful. Then more points are sampled accordingly to retrieved piecewise-constant probability function. In that way we make sure to cover all the imporant parts of the scene.
+Secondly, initial samples are sent to NeRF model (referred to as "coarse", because it takes in coarsly sampled points), which outputs RGB and $\sigma$ for each point. We don't care about the color, but the information about density is very usuful. Then more points are sampled accordingly to retrieved piecewise-constant probability function. In that way we make sure to cover all the imporant parts of the scene.
 
-
+![](https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWdkd3UyZGVldWR5YWJoZ3BtM2FkMHUwOGdrMWxsZTRnNHFheWE3MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/8Cqeh5RSiSMplgSfbH/giphy.gif)
 
 ### The issue with sampling
 
 Unfortunetly whole process is very slow, because NeRF model has to evaluate thousand of samples before it can become useful (trained) and able to render new views. And even then the rendering process is slow making real-time rendering not feasible.
+
+Wouldn't it be nice to sample exactly on the edge of the beggining of matter? Then only one point would be needed to get the color for the pixel. If that's not really possible, then sampling directly in the close proximity of dense area would still be a grand improvment.
+
+![](https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZnZtazNpYXI4c20xY29kMDUwMjZieWhwNWZvNnM5ZDB0YmVtYzZ6ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JFPMUsHZRHzlkHnKIo/giphy.gif)
+
+### Solution
+
+That's exactly the problem that our work is trying to solve. With long lasting project, various ideas and experiments we still haven't arrived at the desired effect, but for now  we present our best results so far in the form of this application.
 
 
 
