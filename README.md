@@ -8,39 +8,70 @@ But how do we do that? After all we only have pictures of the scene, that we nee
 
 This is done in 3 steps:
 
+### 1. March rays and sample points
 
-
-
-
-## 1. March rays and sample points
 Rays are marched through the scene from the position of the real camera cooridnates which are known beforehand. Each camera also has viewing direction (its imporant to know which direction the camera is facing). Then points are sampled along the ray, which basically means choosing some locations along the ray that'll later be used to render an image. Each point is represented as a tuple of its x, y, z cooridnates and also camera origin and viewing direction.
 
 ![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDZtb3RiaHVxZWYwYnMzYnFyNWhnMmJlenUyMjZsNHpoOXI5ZW83ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Xg9OsvGchuBV8pD5l9/giphy.gif)
 
-## 2. Get colors and densities
-   
+### 2. Get colors and densities
+
 Now we use the NeRF model, which given point representations predicts its color (RGB) and density $\sigma$. $\sigma$ describes whether model thinks something is there or not.
 We do that until every point has been assigned its color and density.
 
 ![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMnB5NjQzemJ6b3E0OWoyamU4bmw3bXNnMXl5cWFrYnNkOHF2ZjdvcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/6TeTwFqyoMsXSlt3h6/giphy.gif)
 
-## 3. Render colors and compare
+### 3. Render colors and compare
+
 Now we can use classical rendering techniques to accumulate all the samples into one color. Only those colors which density is high will contribute to the final output. It is taken into account that light stops traveling further upon hitting solid object, so the colors predicted "behind" the object won't be taken into account.
 Now, we can compare our predicted output with real value and measure the error.
 Because every step of the process is differntiable gradient descent methods can be used to minimize error (improve reconstruction of the image)
 
 ![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExaTRzNHIzbGlyc2duYTFmamtheW11ZW01NG1nODY3ZDNjYTR5cjEwYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/6ldmvwjbJS9WchYeIo/giphy.gif)
 
-## But how we do get the representation?
+### But how we do get the representation?
+
 This process repeats thousand of times (usually we have 40-70 (400x400) pictures, and rays are shot through every pixel), therefore model has ability to distinguish different points from each other. Simplifying: if it has seen a point from one angle, and its yellow, then it made a prediction of the same point from a different angle, and its still yellow, how probable it is that this point is still yellow viewed from the middle of two angles?
 
 ![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzZmMGpnanE3dTNta3hycnFpcmtrcHM5YzdzbGVrZzlrNXpkMjdwYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jXqwRj5eXtbOfxF9yd/giphy.gif)
 
+### Rendering
 
-## Rendering
 After successful training every possible view can be render at will.
 
 ![](https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYXdjOTRnMnhsdWNwbWJ3Z2UzMG5wcHA5NXMyc2lqNXM4eHBhZWE4YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/O11QQczTPt3rjTLzHW/giphy.gif)
+
+## ## Sampling in NeRF
+
+Let's take a closer look at the way points are sampled in the original NeRF and why one would like to improve it.
+
+
+
+Original sampling process is done in two stages: first, to get the initial information about densities and second, to resample in the areas of the highest density (highest probability that something is there)
+
+### First stage: Initial uniform sampling
+
+Firstly, ray is divided into N equal bins along the ray. Then for each bin we sample once with the uniform probability between the ends. Why? We want to make sure that we sample throughout the whole scene, but also let the model explore the space, which fixed sampling would prevent.
+
+
+
+![](https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGY4b3o4dWFtcjlxOHVwMDNqZjJpNTFxbHJ2OHh3bjUxdm03ejBkaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/m7kilMWnQNq5VsB4V9/giphy.gif)
+
+
+
+### Second stage: Resampling in dense areas
+
+Secondly, initial samples are sent to NeRF model, which outputs RGB and $\sigma$ for each point. We don't care about the color, but the information about density is very usuful. Then more points are sampled accordingly to retrieved piecewise-constant probability function. In that way we make sure to cover all the imporant parts of the scene.
+
+
+
+### The issue with sampling
+
+Unfortunetly whole process is very slow, because NeRF model has to evaluate thousand of samples before it can become useful (trained) and able to render new views. And even then the rendering process is slow making real-time rendering not feasible.
+
+
+
+
 
 ## Medical
 
