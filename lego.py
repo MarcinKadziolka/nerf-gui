@@ -9,6 +9,7 @@ from helpers import (
     Image,
     Orientation,
     Indexing,
+    draw_text,
     load_all_folders,
     construct_folder_name,
     set_idx,
@@ -116,6 +117,13 @@ def lego_run(project_checkboxes, screen):
     global image_idx
     global images
     run = True
+    active_samples_checkbox = samples_checkboxes.get_active_checkboxes()[0]
+    active_coarse_samples_checkbox = coarse_samples_checkboxes.get_active_checkboxes()[
+        0
+    ]
+    total_num_of_samples = int(active_coarse_samples_checkbox.text) + int(
+        active_samples_checkbox.text
+    )
     while run:
         update_folder = False
         for event in pygame.event.get():
@@ -172,11 +180,33 @@ def lego_run(project_checkboxes, screen):
             folder_data["view_dirs"] = ablation_checkboxes["View direction"].active
             folder_name = construct_folder_name(folder_data)
             images = folders[folder_name]
+            total_num_of_samples = int(active_coarse_samples_checkbox.text) + int(
+                active_samples_checkbox.text
+            )
 
         screen.fill(settings.Color.BACKGROUND.value)
         images[image_idx].draw(screen)
         play_button.draw(screen)
         arrows_buttons.display(screen)
+
+        draw_text(
+            "Coarse: ",
+            screen,
+            coarse_samples_checkboxes.x - 230,
+            coarse_samples_checkboxes.y,
+        )
+        draw_text(
+            "Fine: ",
+            screen,
+            coarse_samples_checkboxes.x - 230,
+            samples_checkboxes.y,
+        )
+        draw_text(
+            f"Total number of samples: {total_num_of_samples}",
+            screen,
+            coarse_samples_checkboxes.x - 50,
+            samples_checkboxes.y + 100,
+        )
 
         coarse_samples_checkboxes.display(screen)
         samples_checkboxes.display(screen)
