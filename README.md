@@ -1,5 +1,9 @@
 # NerfGUI
 
+<img src="https://github.com/MarcinKadziolka/nerf-gui/assets/30349386/75831efc-b7eb-42e6-b0d8-9a39ec711dc5" width="400">
+
+Graphical user interface presenting results from two projects: Sampling in NeRF and Mednerf.
+
 ## What is NeRF?
 NeRF is a machine learning model that allows to render new high quality views after training on few dozens images of the scene.
 
@@ -80,7 +84,11 @@ Wouldn't it be nice to sample exactly on the edge of the beggining of matter? Th
 
 That's exactly the problem that our work is trying to solve. With long lasting project, various ideas and experiments we still haven't arrived at the desired effect, but for now  we present our best results so far in the form of this application.
 
+In the application user can view results of different NeRF models.
+"Coarse" section represents number of points sampled uniformly along each ray. When option "0" is chosen viewed results are from our model, which tries to sample directly in the dense areas.
+Apart from that ablation study was done for original NeRF, user can enable/disable positional encoding and viewing direction.
 
+<img src="https://github.com/MarcinKadziolka/nerf-gui/assets/30349386/75831efc-b7eb-42e6-b0d8-9a39ec711dc5" width="400">
 
 
 
