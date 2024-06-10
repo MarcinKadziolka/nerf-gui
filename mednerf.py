@@ -18,8 +18,8 @@ from helpers import (
 model_dict = {
     "Mednerf": "mednerf",
     "HyperNeRFGAN": "nerfgan",
-    "HNGAN + aug": "nerfgan_aug",
-    "HNGAN + aug + disc": "nerfgan_aug_gen",
+    "HNGAN -no VD": "nerfgan_aug",
+    "HNGAN - no VD + aug": "nerfgan_aug_gen",
 }
 
 
@@ -28,7 +28,7 @@ def initialize_layouts_mednerf():
     checkboxes_y = 800
     small_button_width = 70
     n_samples = CheckBoxLayout(
-        ["Mednerf", "HyperNeRFGAN", "HNGAN + aug", "HNGAN + aug + disc"],
+        ["Mednerf", "HyperNeRFGAN", "HNGAN -no VD", "HNGAN - no VD + aug"],
         active_ids=[0],
         width=350,
         distance=settings.HORIZONTAL_DISTANCE + 10,
