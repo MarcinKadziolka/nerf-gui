@@ -92,6 +92,12 @@ In the application, users can view the results of different NeRF models. The "Co
 ## Medical
 
 ### Use Case
+CT scans are commonly used in medicine to give a 3d view of patinets body, and visualise their internal organs. While they are great, they come with a fair share of drawbacks,
+they take a long time and due to how they work, each exam causes patients body to absorb a small dose of radiation, which can accumulate over multiple exams.
+Neural networks can be used to generate a 'CT Scan like' projections based of off single 2D x-ray.
+
+### NeRF in medical imaging
+NeRFs, due to they high resolution and ability to resolve geometry and volume are good candidates for replicating CT Scans, but since NeRF is only a representation of a object, it needs to be combined with a generative model like GAN.
 
 ### Medical vs Synthetic data
 
@@ -122,8 +128,10 @@ for differences between synthetic and medical datasets we change the sampling an
 ### Experiments
 
 We performed ablation study investigating ways to improve model results. We've experimented with implementing stylegan2 augmentations, changed the number of feature maps and implememted nerf viewing directions
+### Viewing dir
 [TABLE]
 [CONCLUSIONS]
+### Augmentations
 
 ### Results
 
