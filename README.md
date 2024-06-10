@@ -1,6 +1,6 @@
 # NerfGUI
 
-<img src="https://github.com/MarcinKadziolka/nerf-gui/assets/30349386/75831efc-b7eb-42e6-b0d8-9a39ec711dc5" width="400">
+<img src="https://github.com/MarcinKadziolka/nerf-gui/assets/30349386/55cb3e88-c2f6-47b3-8c06-0b2ebee25fd3" width="700">
 
 Graphical user interface presenting results from two projects: Sampling in NeRF and Mednerf.
 
@@ -88,7 +88,7 @@ In the application user can view results of different NeRF models.
 "Coarse" section represents number of points sampled uniformly along each ray. When option "0" is chosen viewed results are from our model, which tries to sample directly in the dense areas.
 Apart from that ablation study was done for original NeRF, user can enable/disable positional encoding and viewing direction.
 
-<img src="https://github.com/MarcinKadziolka/nerf-gui/assets/30349386/75831efc-b7eb-42e6-b0d8-9a39ec711dc5" width="400">
+<img src="https://github.com/MarcinKadziolka/nerf-gui/assets/30349386/75831efc-b7eb-42e6-b0d8-9a39ec711dc5" width="700">
 
 
 
