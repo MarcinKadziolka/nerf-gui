@@ -129,12 +129,13 @@ for differences between synthetic and medical datasets we change the sampling an
 
 We performed ablation study investigating ways to improve model results. We've experimented with implementing stylegan2 augmentations, changed the number of feature maps and implememted nerf viewing directions
 ### Viewing dir
-[TABLE]
-[CONCLUSIONS]
+Experiments with NeRF shown that omiting viewing dir can lead to faster training times, at a cost of no shadow representation. Since in the medical case shadows are nonexistent this can be a feasable way to speed up the training.
+
 ### Augmentations
+MedNeRF utilized augmentations to greatly improve results, therefore its worth investigating if they will improve HyperNeRFGAN as well
 
 ### Results
-
 Compared to other models, HyperNeRFGAN achieves significantly better results, leading to higher quality projections from single view x-ray.
 ![results!](assets/images/mednerf/results.jpg) 
-[IMAGES AND GIFS]
+Ablation study shows, that omiting viewing directions, has a negative impact on quality of generated projections, while the positive impact of
+implementing augmentations is neglible.
