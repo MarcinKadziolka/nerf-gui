@@ -3,9 +3,8 @@
 <img src="https://github.com/MarcinKadziolka/nerf-gui/assets/30349386/55cb3e88-c2f6-47b3-8c06-0b2ebee25fd3" width="700">
 
 Graphical user interface presenting results from two projects: Sampling in NeRF and Mednerf.
-<a href="https://github.com/MarcinKadziolka/nerf-gui">
-### Click for live demo
-</a>
+
+<a href="https://github.com/MarcinKadziolka/nerf-gui">Click for live demo</a>
 
 ## What is NeRF?
 NeRF is a machine learning model that allows for the rendering of new high-quality views after training on a few dozen images of the scene.
