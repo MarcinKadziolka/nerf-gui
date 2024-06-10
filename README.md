@@ -137,5 +137,7 @@ MedNeRF utilized augmentations to greatly improve results, therefore its worth i
 ### Results
 Compared to other models, HyperNeRFGAN achieves significantly better results, leading to higher quality projections from single view x-ray.
 ![results!](assets/images/mednerf/results.jpg) 
+
+
 Ablation study shows, that omiting viewing directions, has a negative impact on quality of generated projections, while the positive impact of
 implementing augmentations is neglible.
