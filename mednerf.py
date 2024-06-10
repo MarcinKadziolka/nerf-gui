@@ -132,7 +132,7 @@ def mednerf_run(project_checkboxes, screen):
                 update_folder = True
 
             if project_checkboxes.update(event):
-                if project_checkboxes["Lego"].active:
+                if project_checkboxes["Sampling"].active:
                     return
             # play and play_button is passed
             # because clicking any of the arrow

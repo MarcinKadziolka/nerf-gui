@@ -13,7 +13,7 @@ pygame.display.set_caption("Nerf gui")
 
 
 project_checkboxes = CheckBoxLayout(
-    ["Lego", "Mednerf"],
+    ["Sampling", "Mednerf"],
     active_ids=[0],
     width=350,
     distance=settings.VERTICAL_DISTANCE,
