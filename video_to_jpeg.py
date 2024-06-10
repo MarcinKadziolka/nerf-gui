@@ -17,7 +17,7 @@ def video_to_jpegs(video_path, output_folder):
     subprocess.run(command, check=True)
 
 if __name__ == "__main__":
-    video_path = 'Fakes000400 front.mp4'  # Replace with your video file path
-    output_folder = 'output_frames'  # Replace with your desired output folder
+    video_path = 'videos/fakes_nocrop.mp4'  # Replace with your video file path
+    output_folder = 'mednerf_dataset/chest_nerfgan_aug_gen'  # Replace with your desired output folder
 
     video_to_jpegs(video_path, output_folder)
