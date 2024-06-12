@@ -4,7 +4,9 @@
 
 Graphical user interface presenting results from two projects: Sampling in NeRF and Mednerf.
 
-<a href="https://github.com/MarcinKadziolka/nerf-gui">Click for live demo</a>
+<a href="https://github.com/MarcinKadziolka/nerf-gui">Click for live demo</a>, where you can visualize rendered images:
+
+![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzRqMDR1cHcxbTQ5b3Nob28ybGs5bXoxN2pibmNnZjVmbmhudGxuaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/z7WSsSFOM6zZfRVB75/giphy.gif)
 
 ## What is NeRF?
 Neural Radiance Fields (NeRF) are a groundbreaking technology that allows us to generate new, high-quality views of a scene from just a few dozen images. Imagine being able to see a scene from any angle after only having a handful of pictures—this is the magic of NeRF.
