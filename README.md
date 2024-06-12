@@ -7,45 +7,41 @@ Graphical user interface presenting results from two projects: Sampling in NeRF 
 <a href="https://github.com/MarcinKadziolka/nerf-gui">Click for live demo</a>
 
 ## What is NeRF?
-NeRF is a machine learning model that allows for the rendering of new high-quality views after training on a few dozen images of the scene.
+Neural Radiance Fields (NeRF) are a groundbreaking technology that allows us to generate new, high-quality views of a scene from just a few dozen images. Imagine being able to see a scene from any angle after only having a handful of pictures—this is the magic of NeRF.
 
-The idea begins with having images of the scene that we want to represent.
+Here's a basic example: you start with a few photos of an object or scene.
 
 <img src="https://github.com/MarcinKadziolka/nerf-gui/assets/30349386/d049acc6-26be-497b-b109-2f1a69664684" width="400">
 
-Then we want to be able to create a new previously unseen image of the scene.
+NeRF can then generate a completely new, previously unseen image of the scene.
 
 <img src="https://github.com/MarcinKadziolka/nerf-gui/assets/30349386/91513a6e-178c-4534-bbfe-fcfab5f23949" width="400">
 
-But how do we do that? After all, we only have pictures of the scene that we need to somehow use to create a representation of the object, such that we will be able to query the model from any location we can imagine.
+## How does NeRF work?
 
-<img src="https://github.com/MarcinKadziolka/nerf-gui/assets/30349386/297c3a0d-714f-4172-99c2-f24be27f0c50" width="400">
-
-This is the problem that NeRF solves in 3 steps.
+NeRF tackles the challenge in three main steps:
 
 ### 1. March rays and sample points
 
-Rays are marched through the scene from the position of the real camera coordinates, which are known beforehand. Each camera also has a viewing direction (it's important to know which direction the camera is facing). Then, points are sampled along the ray, which basically means choosing some locations along the ray that will later be used to render an image. Each point is represented as a tuple of its x, y, z coordinates and also includes the camera origin and viewing direction.
+Rays are projected through the scene from the camera's perspective. Points along these rays are sampled, with each point described by its coordinates and the camera's viewing direction.
 
 ![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDZtb3RiaHVxZWYwYnMzYnFyNWhnMmJlenUyMjZsNHpoOXI5ZW83ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Xg9OsvGchuBV8pD5l9/giphy.gif)
 
 ### 2. Get colors and densities
 
-Now we use the NeRF model, which, given point representations, predicts its color (RGB) and density, $\sigma$. $\sigma$ describes whether the model thinks something is there or not. We do this until every point has been assigned its color and density.
+The NeRF model predicts the color and density for each sampled point. Density helps in identifying whether a point lies on the surface of an object or in empty space.
 
 ![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMnB5NjQzemJ6b3E0OWoyamU4bmw3bXNnMXl5cWFrYnNkOHF2ZjdvcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/6TeTwFqyoMsXSlt3h6/giphy.gif)
 
 ### 3. Render colors and compare
 
-Now we can use classical rendering techniques to accumulate all the samples into one color. Only those colors with high density will contribute to the final output. It is taken into account that light stops traveling further upon hitting a solid object, so the colors predicted "behind" the object won't be considered.
-
-Now, we can compare our predicted output with the real value and measure the error. Because every step of the process is differentiable, gradient descent methods can be used to minimize the error and improve the reconstruction of the image.
+The model accumulates the sampled colors, considering only those with high density to render the final image. The predicted output is compared to the real image, and the error is minimized through gradient descent.
 
 ![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExaTRzNHIzbGlyc2duYTFmamtheW11ZW01NG1nODY3ZDNjYTR5cjEwYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/6ldmvwjbJS9WchYeIo/giphy.gif)
 
 ### But how we do get the representation?
 
-This process repeats thousands of times (usually we have 40-70 pictures, each 400x400 pixels, and rays are shot through every pixel), giving the model the ability to distinguish different points from each other. Simplifying: if it has seen a point from one angle and it's yellow, then it makes a prediction of the same point from a different angle, and it's still yellow, how probable is it that this point remains yellow when viewed from the middle of the two angles?
+This iterative process is performed thousands of times, typically utilizing 40-70 images, each with dimensions of 400x400 pixels. Rays are projected through every pixel, enabling the model to differentiate between various points within the scene. In simpler terms, if the model observes a point appearing yellow from one angle and predicts it to be yellow from a different angle, there's a high likelihood that this point retains its yellow color when viewed from the intermediate angle.
 
 ![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzZmMGpnanE3dTNta3hycnFpcmtrcHM5YzdzbGVrZzlrNXpkMjdwYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jXqwRj5eXtbOfxF9yd/giphy.gif)
 
@@ -55,11 +51,20 @@ After successful training, every possible view can be rendered at will.
 
 ![](https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYXdjOTRnMnhsdWNwbWJ3Z2UzMG5wcHA5NXMyc2lqNXM4eHBhZWE4YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/O11QQczTPt3rjTLzHW/giphy.gif)
 
-## Sampling in NeRF
+### Why improve NeRF?
 
-Let's take a closer look at the way points are sampled in the original NeRF and why one might want to improve it.
+While NeRF is revolutionary, it has its limitations. The process is slow because it requires evaluating thousands of samples, making real-time rendering infeasible. Wouldn’t it be great if we could sample exactly where we need and speed up the process?
 
-The original sampling process is done in two stages: first, to get the initial information about densities, and second, to resample in the areas of the highest density (the highest probability that something is there).
+![](https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZnZtazNpYXI4c20xY29kMDUwMjZieWhwNWZvNnM5ZDB0YmVtYzZ6ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JFPMUsHZRHzlkHnKIo/giphy.gif)
+
+## Our Work: Enhancing NeRF Sampling
+
+### Current Sampling in NeRF
+
+The traditional NeRF sampling process involves two stages:
+
+1. Initial Uniform Sampling: Rays are divided into equal segments, and points are sampled uniformly.
+2. Resampling in Dense Areas: After initial sampling, points are resampled based on density estimates to focus on important regions.
 
 ### First stage: Initial uniform sampling
 
@@ -75,15 +80,14 @@ Secondly, the initial samples are sent to the NeRF model (referred to as "coarse
 
 ### The issue with sampling
 
-Unfortunately, the whole process is very slow because the NeRF model has to evaluate thousands of samples before it becomes useful (trained) and able to render new views. Even then, the rendering process is slow, making real-time rendering not feasible.
-
-Wouldn't it be nice to sample exactly on the edge of the beginning of matter? Then, only one point would be needed to get the color for the pixel. If that's not really possible, then sampling directly in the close proximity of a dense area would still be a grand improvement.
+We aim to improve the efficiency of this process by developing a model that samples points directly in dense areas from the start. This approach can significantly reduce the number of samples needed and speed up the rendering process.
 
 ![](https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZnZtazNpYXI4c20xY29kMDUwMjZieWhwNWZvNnM5ZDB0YmVtYzZ6ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JFPMUsHZRHzlkHnKIo/giphy.gif)
 
+
 ### Solution
 
-That's exactly the problem our work is trying to solve. Despite a long-lasting project with various ideas and experiments, we still haven't achieved the desired effect, but for now, we present our best results so far in the form of this application.
+Our initial results are promising, showing more efficient sampling and faster rendering. However, this is an ongoing project, and we are continually refining our methods to achieve even better performance.
 
 In the application, users can view the results of different NeRF models. The "Coarse" section represents the number of points sampled uniformly along each ray. When the option "0" is chosen, the viewed results are from our model, which tries to sample directly in the dense areas. Additionally, an ablation study was done for the original NeRF, allowing users to enable or disable positional encoding and viewing direction.
 
