@@ -13,7 +13,7 @@ The idea begins with having images of the scene that we want to represent.
 
 <img src="https://github.com/MarcinKadziolka/nerf-gui/assets/30349386/d049acc6-26be-497b-b109-2f1a69664684" width="400">
 
-Then we want to be able to create new previously unseen image of the scene.
+Then we want to be able to create a new previously unseen image of the scene.
 
 <img src="https://github.com/MarcinKadziolka/nerf-gui/assets/30349386/91513a6e-178c-4534-bbfe-fcfab5f23949" width="400">
 
@@ -45,7 +45,7 @@ Now, we can compare our predicted output with the real value and measure the err
 
 ### But how we do get the representation?
 
-This process repeats thousands of times (usually we have 40-70 pictures, each 400x400 pixels, and rays are shot through every pixel), giving the model the ability to distinguish different points from each other. Simplifying: if it has seen a point from one angle and it's yellow, then it makes a prediction of the same point from a different angle, and it's still yellow, how probable is it that this point is still yellow when viewed from the middle of the two angles?
+This process repeats thousands of times (usually we have 40-70 pictures, each 400x400 pixels, and rays are shot through every pixel), giving the model the ability to distinguish different points from each other. Simplifying: if it has seen a point from one angle and it's yellow, then it makes a prediction of the same point from a different angle, and it's still yellow, how probable is it that this point remains yellow when viewed from the middle of the two angles?
 
 ![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzZmMGpnanE3dTNta3hycnFpcmtrcHM5YzdzbGVrZzlrNXpkMjdwYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jXqwRj5eXtbOfxF9yd/giphy.gif)
 
