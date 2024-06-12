@@ -1,3 +1,9 @@
+# Graphical user interface for NeRF based projects
+
+<img src="https://github.com/MarcinKadziolka/nerf-gui/assets/30349386/55cb3e88-c2f6-47b3-8c06-0b2ebee25fd3" width="700">
+
+Visit our [website](https://marcinkadziolka.github.io/nerf-gui/) for overview.
+
 ## Clone and enter the repository
 ```
 https://github.com/MarcinKadziolka/nerf-gui.git
