@@ -4,7 +4,8 @@
 
 ### Visualize rendered images for different models and settings
 
-![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzRqMDR1cHcxbTQ5b3Nob28ybGs5bXoxN2pibmNnZjVmbmhudGxuaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/z7WSsSFOM6zZfRVB75/giphy.gif)
+![](https://media1.giphy.com/media/TZAl3YpFAJCC0EYdKC/giphy.gif)
+
 
 
 Visit our [website](https://marcinkadziolka.github.io/nerf-gui/) for overview.
