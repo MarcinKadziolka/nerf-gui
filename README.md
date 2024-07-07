@@ -12,7 +12,7 @@ Visit our [website](https://marcinkadziolka.github.io/nerf-gui/) for overview.
 
 ## Clone and enter the repository
 ```
-https://github.com/MarcinKadziolka/nerf-gui.git
+git clone https://github.com/MarcinKadziolka/nerf-gui.git
 cd nerf-gui
 ```
 ## Create virtual environment and activate it
